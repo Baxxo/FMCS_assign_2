@@ -1,0 +1,126 @@
+// Charge Battery of Rover
+controllable event ChargeBatteryY;
+controllable event ChargeBatteryB;
+
+// Movement for Yellow Rover
+uncontrollable event uRoverYMoveUp;
+uncontrollable event uRoverYMoveDown;
+uncontrollable event uRoverYMoveRight;
+uncontrollable event uRoverYMoveLeft;
+
+controllable event RoverYMoveUp;
+controllable event RoverYMoveDown;
+controllable event RoverYMoveRight;
+controllable event RoverYMoveLeft;
+
+// Rover Yellow step on an item
+controllable event RoverYMineral;
+controllable event RoverYLiquid;
+controllable event RoverYFlora;
+controllable event RoverYFossil;
+
+// Rover Yellow empty items because it is on the lab
+controllable event RoverYUnload;
+
+plant RoverYellow:
+
+    disc int[1..6] positionX = 3;
+    disc int[1..4] positionY = 4;
+    disc int[0..8] battery = 8;
+    disc int[0..3] mineral = 0;
+    disc int[0..3] liquid = 0;
+    disc int[0..3] flora = 0;
+    disc int[0..3] fossil = 0;
+
+    location: initial; marked;
+        edge RoverYMoveUp,uRoverYMoveUp when positionY < 4 and battery > 0
+            do positionY := positionY + 1, battery := battery -1;
+        edge RoverYMoveDown,uRoverYMoveDown when positionY > 1  and battery > 0
+            do positionY := positionY - 1, battery := battery -1;
+        edge RoverYMoveRight,uRoverYMoveRight when positionX < 6 and battery > 0
+            do positionX := positionX + 1, battery := battery -1;
+        edge RoverYMoveLeft,uRoverYMoveLeft when positionX > 1 and battery > 0
+            do positionX := positionX - 1, battery := battery -1;
+
+        edge ChargeBatteryY do battery := 8;
+
+        edge RoverYMineral when mineral < 3 do mineral := mineral + 1;
+        edge RoverYLiquid when liquid < 3 do liquid := liquid + 1;
+        edge RoverYFlora when flora < 3 do flora := flora + 1;
+        edge RoverYFossil when fossil < 3 do fossil := fossil + 1;
+
+        edge RoverYUnload when mineral > 0 or liquid > 0 or flora > 0 or fossil > 0
+            do mineral := 0, liquid := 0, flora := 0, fossil := 0;
+
+end
+
+
+// Movement for Blue Rover
+uncontrollable event uRoverBMoveUp;
+uncontrollable event uRoverBMoveDown;
+uncontrollable event uRoverBMoveRight;
+uncontrollable event uRoverBMoveLeft;
+
+controllable event RoverBMoveUp;
+controllable event RoverBMoveDown;
+controllable event RoverBMoveRight;
+controllable event RoverBMoveLeft;
+
+// Rover Blue step on an item
+controllable event RoverBMineral;
+controllable event RoverBLiquid;
+controllable event RoverBFlora;
+controllable event RoverBFossil;
+
+// Rover Blue empty items because it is on the lab
+controllable event RoverBUnload;
+
+plant RoverBlue:
+
+    disc int[1..6] positionX = 4;
+    disc int[1..4] positionY = 1;
+    disc int[0..8] battery = 8;
+    disc int[0..3] mineral = 0;
+    disc int[0..3] liquid = 0;
+    disc int[0..3] flora = 0;
+    disc int[0..3] fossil = 0;
+
+    location: initial; marked;
+        edge RoverBMoveUp,uRoverBMoveUp when positionY < 4 and battery > 0
+            do positionY := positionY + 1, battery := battery -1;
+        edge RoverBMoveDown,uRoverBMoveDown when positionY > 1  and battery > 0
+            do positionY := positionY - 1, battery := battery -1;
+        edge RoverBMoveRight,uRoverBMoveRight when positionX < 6 and battery > 0
+            do positionX := positionX + 1, battery := battery -1;
+        edge RoverBMoveLeft,uRoverBMoveLeft when positionX > 1 and battery > 0
+            do positionX := positionX - 1, battery := battery -1;
+
+        edge ChargeBatteryB do battery := 8;
+
+        edge RoverBMineral when mineral < 3 do mineral := mineral + 1;
+        edge RoverBLiquid when liquid < 3 do liquid := liquid + 1;
+        edge RoverBFlora when flora < 3 do flora := flora + 1;
+        edge RoverBFossil when fossil < 3 do fossil := fossil + 1;
+
+        edge RoverBUnload when mineral > 0 or liquid > 0 or flora > 0 or fossil > 0
+            do mineral := 0, liquid := 0, flora := 0, fossil := 0;
+
+end
+
+controllable event LabBusy;
+controllable event LabTransmit;
+
+
+plant Lab:
+
+    disc bool busy = false;
+    disc bool processed = false;
+
+    location: initial; marked;
+        edge RoverBUnload, RoverYUnload do busy := true;
+        edge LabBusy when busy do processed := true, busy := false;
+        edge LabTransmit when not busy and processed do processed := false;
+
+
+
+end
