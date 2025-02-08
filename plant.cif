@@ -22,11 +22,32 @@ controllable event RoverYFossil;
 // Rover Yellow empty items because it is on the lab
 controllable event RoverYUnload;
 
+svgfile "plant.svg";
+
+plant ChargeStation1:
+    const int positionX = 3;
+    const int positionY = 4;
+
+    location: initial;marked;
+        edge ChargeBatteryY when (RoverYellow.positionX = positionX and RoverYellow.positionY = positionY);
+        edge ChargeBatteryB when (RoverBlue.positionX = positionX and RoverBlue.positionY = positionY);
+end
+
+
+plant ChargeStation2:
+    const int positionX = 4;
+    const int positionY = 1;
+
+    location: initial;marked;
+        edge ChargeBatteryY when (RoverYellow.positionX = positionX and RoverYellow.positionY = positionY);
+        edge ChargeBatteryB when (RoverBlue.positionX = positionX and RoverBlue.positionY = positionY);
+end
+
 plant RoverYellow:
 
     disc int[1..6] positionX = 3;
     disc int[1..4] positionY = 4;
-    disc int[0..8] battery = 8;
+    disc int[0..8] battery = 4;
     disc int[0..3] mineral = 0;
     disc int[0..3] liquid = 0;
     disc int[0..3] flora = 0;
@@ -54,6 +75,15 @@ plant RoverYellow:
 
 end
 
+svgout id "yellow-cell-1" attr "fill" value if RoverYellow.battery < 1 : "lightgray" else "yellow" end;
+svgout id "yellow-cell-2" attr "fill" value if RoverYellow.battery < 2 : "lightgray" else "yellow" end;
+svgout id "yellow-cell-3" attr "fill" value if RoverYellow.battery < 3 : "lightgray" else "yellow" end;
+svgout id "yellow-cell-4" attr "fill" value if RoverYellow.battery < 4 : "lightgray" else "yellow" end;
+svgout id "yellow-cell-5" attr "fill" value if RoverYellow.battery < 5 : "lightgray" else "yellow" end;
+svgout id "yellow-cell-6" attr "fill" value if RoverYellow.battery < 6 : "lightgray" else "yellow" end;
+svgout id "yellow-cell-7" attr "fill" value if RoverYellow.battery < 7 : "lightgray" else "yellow" end;
+svgout id "yellow-cell-8" attr "fill" value if RoverYellow.battery < 8 : "lightgray" else "yellow" end;
+
 
 // Movement for Blue Rover
 uncontrollable event uRoverBMoveUp;
@@ -79,7 +109,7 @@ plant RoverBlue:
 
     disc int[1..6] positionX = 4;
     disc int[1..4] positionY = 1;
-    disc int[0..8] battery = 8;
+    disc int[0..8] battery = 2;
     disc int[0..3] mineral = 0;
     disc int[0..3] liquid = 0;
     disc int[0..3] flora = 0;
@@ -107,20 +137,29 @@ plant RoverBlue:
 
 end
 
+svgout id "blue-cell-1" attr "fill" value if RoverBlue.battery < 1 : "lightgray" else "blue" end;
+svgout id "blue-cell-2" attr "fill" value if RoverBlue.battery < 2 : "lightgray" else "blue" end;
+svgout id "blue-cell-3" attr "fill" value if RoverBlue.battery < 3 : "lightgray" else "blue" end;
+svgout id "blue-cell-4" attr "fill" value if RoverBlue.battery < 4 : "lightgray" else "blue" end;
+svgout id "blue-cell-5" attr "fill" value if RoverBlue.battery < 5 : "lightgray" else "blue" end;
+svgout id "blue-cell-6" attr "fill" value if RoverBlue.battery < 6 : "lightgray" else "blue" end;
+svgout id "blue-cell-7" attr "fill" value if RoverBlue.battery < 7 : "lightgray" else "blue" end;
+svgout id "blue-cell-8" attr "fill" value if RoverBlue.battery < 8 : "lightgray" else "blue" end;
+
 controllable event LabBusy;
 controllable event LabTransmit;
 
 
 plant Lab:
 
+    const int positionX = 4;
+    const int positionY = 1;
     disc bool busy = false;
     disc bool processed = false;
 
     location: initial; marked;
         edge RoverBUnload, RoverYUnload do busy := true;
-        edge LabBusy when busy do processed := true, busy := false;
-        edge LabTransmit when not busy and processed do processed := false;
-
-
+        edge LabBusy when busy = true do processed := true, busy := false;
+        edge LabTransmit when busy = false  and processed = true do processed := false;
 
 end

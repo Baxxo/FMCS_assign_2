@@ -75,6 +75,7 @@
       <rect x="0" y="0" width="160" height="20" rx="2" ry="2"/>
       <line x1="160" x2="160" y1="5" y2="15"/>
     </svg>
+    <!--Battery Blue-->
     <rect id="blue-cell-1" x="82" y="40" width="18" height="16" fill="blue"/>
     <rect id="blue-cell-2" x="102" y="40" width="18" height="16" fill="blue"/>
     <rect id="blue-cell-3" x="122" y="40" width="18" height="16" fill="lightgray"/>
@@ -83,11 +84,13 @@
     <rect id="blue-cell-6" x="182" y="40" width="18" height="16" fill="lightgray"/>
     <rect id="blue-cell-7" x="202" y="40" width="18" height="16" fill="lightgray"/>
     <rect id="blue-cell-8" x="222" y="40" width="18" height="16" fill="lightgray"/>
+    <!--Positions-->
     <text x="20" y="80">Position</text>
     <text x="80" y="80">x:</text>
     <text id="x-axis-ry" x="100" y="80">4</text>
     <text x="120" y="80">y:</text>
     <text id="y-axis-ry" x="140" y="80">4</text>
+    <!--Collections-->
     <text x="20" y="100">Sample collection</text>
     <text x="80" y="120">◆</text>
     <text x="100" y="120">0</text>
@@ -105,6 +108,7 @@
       <rect x="0" y="0" width="160" height="20" rx="2" ry="2"/>
       <line x1="160" x2="160" y1="5" y2="15"/>
     </svg>
+    <!--Battery Yellow-->
     <rect id="yellow-cell-1" x="82" y="170" width="18" height="16" fill="yellow"/>
     <rect id="yellow-cell-2" x="102" y="170" width="18" height="16" fill="yellow"/>
     <rect id="yellow-cell-3" x="122" y="170" width="18" height="16" fill="yellow"/>
@@ -113,11 +117,13 @@
     <rect id="yellow-cell-6" x="182" y="170" width="18" height="16" fill="lightgray"/>
     <rect id="yellow-cell-7" x="202" y="170" width="18" height="16" fill="lightgray"/>
     <rect id="yellow-cell-8" x="222" y="170" width="18" height="16" fill="lightgray"/>
+    <!--Positions-->
     <text x="20" y="210">Position</text>
     <text x="80" y="210">x:</text>
     <text id="x-axis-rb" x="100" y="210">4</text>
     <text x="120" y="210">y:</text>
     <text id="y-axis-rb" x="140" y="210">4</text>
+    <!--Collections-->
     <text x="20" y="230">Sample collection</text>
     <text x="80" y="250">◆</text>
     <text x="100" y="250">0</text>

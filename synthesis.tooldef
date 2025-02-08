@@ -1,0 +1,14 @@
+from "lib:cif" import *;
+
+
+cifdatasynth(
+     "requirements.cif",
+    "-o supervisor.cif",
+    "-n supervisor" // name the automaton
+);
+
+cifmerge(
+    "plant.cif",
+    "supervisor.cif",
+     "-o controlled-system.cif"
+);
