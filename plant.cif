@@ -55,16 +55,16 @@ plant RoverYellow:
     disc int[0..3] fossil = 0;
 
     location: initial; marked;
-        edge RoverYMoveUp,uRoverYMoveUp when positionY < 4 and battery > 0
-            do positionY := positionY + 1;//, battery := battery -1;
-        edge RoverYMoveDown,uRoverYMoveDown when positionY > 1  and battery > 0
-            do positionY := positionY - 1;//, battery := battery -1;
-        edge RoverYMoveRight,uRoverYMoveRight when positionX < 6 and battery > 0
-            do positionX := positionX + 1;//, battery := battery -1;
-        edge RoverYMoveLeft,uRoverYMoveLeft when positionX > 1 and battery > 0
-            do positionX := positionX - 1;//, battery := battery -1;
+        edge RoverYMoveUp when positionY <= 4 and battery > 0
+            do positionY := positionY + 1, battery := battery -1;
+        edge RoverYMoveDown when positionY >= 1  and battery > 0
+            do positionY := positionY - 1, battery := battery -1;
+        edge RoverYMoveRight when positionX <= 6 and battery > 0
+            do positionX := positionX + 1, battery := battery -1;
+        edge RoverYMoveLeft when positionX >= 1 and battery > 0
+            do positionX := positionX - 1, battery := battery -1;
 
-        edge ChargeBatteryY do battery := 8;
+        /*edge ChargeBatteryY do battery := 8;
 
         edge RoverYMineral when mineral < 3 do mineral := mineral + 1;
         edge RoverYLiquid when liquid < 3 do liquid := liquid + 1;
@@ -120,16 +120,16 @@ plant RoverBlue:
     disc int[0..3] fossil = 0;
 
     location: initial; marked;
-        edge RoverBMoveUp,uRoverBMoveUp when positionY < 4 and battery > 0
-            do positionY := positionY + 1;//, battery := battery -1;
-        edge RoverBMoveDown,uRoverBMoveDown when positionY > 1  and battery > 0
-            do positionY := positionY - 1;//, battery := battery -1;
-        edge RoverBMoveRight,uRoverBMoveRight when positionX < 6 and battery > 0
-            do positionX := positionX + 1;//, battery := battery -1;
-        edge RoverBMoveLeft,uRoverBMoveLeft when positionX > 1 and battery > 0
-            do positionX := positionX - 1;//, battery := battery -1;
+        edge RoverBMoveUp when positionY <= 4 and battery > 0
+            do positionY := positionY + 1, battery := battery -1;
+        edge RoverBMoveDown when positionY >= 1  and battery > 0
+            do positionY := positionY - 1, battery := battery -1;
+        edge RoverBMoveRight when positionX <= 6 and battery > 0
+            do positionX := positionX + 1, battery := battery -1;
+        edge RoverBMoveLeft when positionX >= 1 and battery > 0
+            do positionX := positionX - 1, battery := battery -1;
 
-        edge ChargeBatteryB do battery := 8;
+        /*edge ChargeBatteryB do battery := 8;
 
         edge RoverBMineral when mineral < 3 do mineral := mineral + 1;
         edge RoverBLiquid when liquid < 3 do liquid := liquid + 1;
@@ -151,6 +151,8 @@ svgout id "blue-cell-7" attr "fill" value if RoverBlue.battery < 7 : "lightgray"
 svgout id "blue-cell-8" attr "fill" value if RoverBlue.battery < 8 : "lightgray" else "blue" end;
 svgout id "blue_rover" attr "x" value (RoverBlue.positionX - 1) * 100;
 svgout id "blue_rover" attr "y" value 300 - ((RoverBlue.positionY - 1) * 100);
+
+
 controllable event LabBusy;
 controllable event LabTransmit;
 

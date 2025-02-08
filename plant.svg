@@ -2,7 +2,7 @@
   <svg viewBox="0 0 600 400" width="600" height="400">
 <!--Grid-->
     <rect width="600" height="400" fill="#f4f0ea"/>
-    <g stroke="#ccc" stroke-width="1">
+    <g stroke="#cccccc" stroke-width="1">
 <!--Vertical lines-->
       <line x1="100" y1="0" x2="100" y2="400"/>
       <line x1="200" y1="0" x2="200" y2="400"/>
