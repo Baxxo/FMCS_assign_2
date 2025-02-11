@@ -1,18 +1,20 @@
+svgfile "plant.svg";
 // Charge Battery of Rover
 controllable event ChargeBatteryY;
 controllable event ChargeBatteryB;
 
 // Movement for Yellow Rover
+/*
 uncontrollable event uRoverYMoveUp;
 uncontrollable event uRoverYMoveDown;
 uncontrollable event uRoverYMoveRight;
 uncontrollable event uRoverYMoveLeft;
-
+*/
 controllable event RoverYMoveUp;
 controllable event RoverYMoveDown;
 controllable event RoverYMoveRight;
 controllable event RoverYMoveLeft;
-
+/*
 // Rover Yellow step on an item
 controllable event RoverYMineral;
 controllable event RoverYLiquid;
@@ -21,16 +23,15 @@ controllable event RoverYFossil;
 
 // Rover Yellow empty items because it is on the lab
 controllable event RoverYUnload;
-
-svgfile "plant.svg";
+*/
 
 plant ChargeStation1:
     const int positionX = 3;
     const int positionY = 4;
 
     location: initial;marked;
-        edge ChargeBatteryY when (RoverYellow.positionX = positionX and RoverYellow.positionY = positionY);
-        edge ChargeBatteryB when (RoverBlue.positionX = positionX and RoverBlue.positionY = positionY);
+        /*edge ChargeBatteryY when (RoverYellow.positionX = positionX and RoverYellow.positionY = positionY);
+        edge ChargeBatteryB when (RoverBlue.positionX = positionX and RoverBlue.positionY = positionY);*/
 end
 
 
@@ -39,8 +40,8 @@ plant ChargeStation2:
     const int positionY = 1;
 
     location: initial;marked;
-        edge ChargeBatteryY when (RoverYellow.positionX = positionX and RoverYellow.positionY = positionY);
-        edge ChargeBatteryB when (RoverBlue.positionX = positionX and RoverBlue.positionY = positionY);
+        /*edge ChargeBatteryY when (RoverYellow.positionX = positionX and RoverYellow.positionY = positionY);
+        edge ChargeBatteryB when (RoverBlue.positionX = positionX and RoverBlue.positionY = positionY);*/
 end
 
 plant RoverYellow:
@@ -48,10 +49,10 @@ plant RoverYellow:
     disc int[1..6] positionX = 3; // 200 = (3-1) * 100
     disc int[1..4] positionY = 4; // 0 = 300 - (300) = 300 - (100 * (4 - 1))
     disc int[0..8] battery = 4;
-    disc int[0..3] mineral = 0;
+    /*disc int[0..3] mineral = 0;
     disc int[0..3] liquid = 0;
     disc int[0..3] flora = 0;
-    disc int[0..3] fossil = 0;
+    disc int[0..3] fossil = 0;*/
 
     location: initial; marked;
         edge RoverYMoveUp when positionY < 4 and battery > 0
@@ -63,8 +64,11 @@ plant RoverYellow:
         edge RoverYMoveLeft when positionX > 1 and battery > 0
             do positionX := positionX - 1, battery := battery -1;
 
-        /*edge ChargeBatteryY do battery := 8;
-
+        edge ChargeBatteryY when (
+            (ChargeStation1.positionX = positionX and ChargeStation1.positionY = positionY) or
+            (ChargeStation2.positionX = positionX and ChargeStation2.positionY = positionY)
+        ) do battery := 8;
+/*
         edge RoverYMineral when mineral < 3 do mineral := mineral + 1;
         edge RoverYLiquid when liquid < 3 do liquid := liquid + 1;
         edge RoverYFlora when flora < 3 do flora := flora + 1;
@@ -88,18 +92,18 @@ svgout id "yellow_rover" attr "y" value 300 - ((RoverYellow.positionY - 1) * 100
 svgout id "x-axis-ry" text value RoverYellow.positionX;
 svgout id "y-axis-ry" text value RoverYellow.positionY;
 
-
+/*
 // Movement for Blue Rover
 uncontrollable event uRoverBMoveUp;
 uncontrollable event uRoverBMoveDown;
 uncontrollable event uRoverBMoveRight;
 uncontrollable event uRoverBMoveLeft;
-
+*/
 controllable event RoverBMoveUp;
 controllable event RoverBMoveDown;
 controllable event RoverBMoveRight;
 controllable event RoverBMoveLeft;
-
+/*
 // Rover Blue step on an item
 controllable event RoverBMineral;
 controllable event RoverBLiquid;
@@ -108,16 +112,16 @@ controllable event RoverBFossil;
 
 // Rover Blue empty items because it is on the lab
 controllable event RoverBUnload;
-
+*/
 plant RoverBlue:
 
     disc int[1..6] positionX = 4; // 300 = (4-1) * 100 = 3 * 100
     disc int[1..4] positionY = 1; // 300 = 300 - (0) = 300 - (100 * (1 - 1))
     disc int[0..8] battery = 2;
-    disc int[0..3] mineral = 0;
+    /*disc int[0..3] mineral = 0;
     disc int[0..3] liquid = 0;
     disc int[0..3] flora = 0;
-    disc int[0..3] fossil = 0;
+    disc int[0..3] fossil = 0;*/
 
     location: initial; marked;
         edge RoverBMoveUp when positionY < 4 and battery > 0
@@ -129,8 +133,12 @@ plant RoverBlue:
         edge RoverBMoveLeft when positionX > 1 and battery > 0
             do positionX := positionX - 1, battery := battery -1;
 
-        /*edge ChargeBatteryB do battery := 8;
 
+        edge ChargeBatteryB when (
+            (ChargeStation1.positionX = positionX and ChargeStation1.positionY = positionY) or
+            (ChargeStation2.positionX = positionX and ChargeStation2.positionY = positionY)
+        ) do battery := 8;
+/*
         edge RoverBMineral when mineral < 3 do mineral := mineral + 1;
         edge RoverBLiquid when liquid < 3 do liquid := liquid + 1;
         edge RoverBFlora when flora < 3 do flora := flora + 1;

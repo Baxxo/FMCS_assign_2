@@ -3,8 +3,6 @@ import "plant.cif";
 
 R1:  no rover runs out of battery on tiles that are not charging station.
 
-*/
-
 requirement invariant R1:
     (RoverYellow.battery > 0 and RoverBlue.battery > 0) or (
         (RoverYellow.positionX = ChargeStation1.positionX and RoverYellow.positionY = ChargeStation1.positionY) or
@@ -13,22 +11,24 @@ requirement invariant R1:
         (RoverBlue.positionX = ChargeStation2.positionX and RoverBlue.positionY = ChargeStation2.positionY)
     );
 
+*/
+
 /*
 
 R2: The current energy level of each rover is always >= 2 units;
 
-*/
+requirement invariant R2: RoverYellow.battery >= 2 and RoverBlue.battery >= 2;
 
-//requirement invariant R2: RoverYellow.battery >= 2 and RoverBlue.battery >= 2;
+*/
 
 /*
 
 R3: The maximum number of samples that each rover can carry (no matter the combination of samples) is always <= 10 samples;
 
-*/
+requirement invariant R3: RoverYellow.mineral + RoverYellow.liquid + RoverYellow.flora + RoverYellow.fossil <= 10 and
+                RoverBlue.mineral + RoverBlue.liquid + RoverBlue.flora + RoverBlue.fossil <= 10;
 
-//requirement invariant R3: RoverYellow.mineral + RoverYellow.liquid + RoverYellow.flora + RoverYellow.fossil <= 10 and
-//                RoverBlue.mineral + RoverBlue.liquid + RoverBlue.flora + RoverBlue.fossil <= 10;
+*/
 
 /*
 
@@ -37,35 +37,35 @@ R4: Each rover can unload the collected samples only if
     (ii) the rover is at the lab
     (iii) the lab has completed the previous processing
 
-*/
+requirement R4:
+    (RoverYellow.mineral + RoverYellow.liquid + RoverYellow.flora + RoverYellow.fossil > 0 and
+    RoverYellow.positionX = Lab.positionX and RoverYellow.positionY = Lab.positionY and
+    Lab.busy = false) and
+    (RoverBlue.mineral + RoverBlue.liquid + RoverBlue.flora + RoverBlue.fossil > 0 and
+    RoverBlue.positionX = Lab.positionX and RoverBlue.positionY = Lab.positionY and
+    Lab.busy = false);
 
-//requirement R4:
-//    (RoverYellow.mineral + RoverYellow.liquid + RoverYellow.flora + RoverYellow.fossil > 0 and
-//    RoverYellow.positionX = Lab.positionX and RoverYellow.positionY = Lab.positionY and
-//    Lab.busy = false) and
-//    (RoverBlue.mineral + RoverBlue.liquid + RoverBlue.flora + RoverBlue.fossil > 0 and
-//    RoverBlue.positionX = Lab.positionX and RoverBlue.positionY = Lab.positionY and
-//    Lab.busy = false);
+*/
 
 /*
 
 R5: Each rover can charge only if its current level of energy is <8 units
 
-*/
+requirement R5:
+    RoverYellow.battery = 8 and
+    RoverYellow.positionX != ChargeStation1.positionX and RoverYellow.positionY != ChargeStation1.positionY and
+    RoverYellow.positionX != ChargeStation2.positionX and RoverYellow.positionY != ChargeStation2.positionY and
+    RoverBlue.battery = 8 and
+    RoverBlue.positionX != ChargeStation1.positionX and RoverBlue.positionY != ChargeStation1.positionY and
+    RoverBlue.positionX != ChargeStation2.positionX and RoverBlue.positionY != ChargeStation2.positionY;
 
-//requirement R5:
-//    RoverYellow.battery = 8 and
-//    RoverYellow.positionX != ChargeStation1.positionX and RoverYellow.positionY != ChargeStation1.positionY and
-//    RoverYellow.positionX != ChargeStation2.positionX and RoverYellow.positionY != ChargeStation2.positionY and
-//    RoverBlue.battery = 8 and
-//    RoverBlue.positionX != ChargeStation1.positionX and RoverBlue.positionY != ChargeStation1.positionY and
-//    RoverBlue.positionX != ChargeStation2.positionX and RoverBlue.positionY != ChargeStation2.positionY;
+*/
 
 /*
 
 R6: Rovers do not collide
 
-*/
+requirement invariant R6:
+    RoverYellow.positionX != RoverBlue.positionX and RoverYellow.positionY != RoverBlue.positionY;
 
-//requirement invariant R6:
-//    RoverYellow.positionX != RoverBlue.positionX and RoverYellow.positionY != RoverBlue.positionY;
+*/
