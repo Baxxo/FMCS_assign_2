@@ -1,0 +1,136 @@
+controllable ChargeBatteryY;
+controllable RoverYMoveUp;
+controllable RoverYMoveDown;
+controllable RoverYMoveRight;
+controllable RoverYMoveLeft;
+controllable ChargeBatteryB;
+controllable RoverBMoveUp;
+controllable RoverBMoveDown;
+controllable RoverBMoveRight;
+controllable RoverBMoveLeft;
+plant automaton ChargeStation1:
+  const int[3..3] positionX = 3;
+  const int[4..4] positionY = 4;
+  location:
+    initial;
+    marked;
+end
+plant automaton ChargeStation2:
+  const int[4..4] positionX = 4;
+  const int[1..1] positionY = 1;
+  location:
+    initial;
+    marked;
+end
+plant automaton RoverYellow:
+  disc int[1..6] positionX = 3;
+  disc int[1..4] positionY = 4;
+  disc int[0..8] battery = 4;
+  location:
+    initial;
+    marked;
+    edge RoverYMoveUp when positionY < 4 and battery > 0 do positionY := positionY + 1, battery := battery - 1;
+    edge RoverYMoveDown when positionY > 1 and battery > 0 do positionY := positionY - 1, battery := battery - 1;
+    edge RoverYMoveRight when positionX < 6 and battery > 0 do positionX := positionX + 1, battery := battery - 1;
+    edge RoverYMoveLeft when positionX > 1 and battery > 0 do positionX := positionX - 1, battery := battery - 1;
+    edge ChargeBatteryY when ChargeStation1.positionX = positionX and ChargeStation1.positionY = positionY or ChargeStation2.positionX = positionX and ChargeStation2.positionY = positionY do battery := 8;
+end
+plant automaton RoverBlue:
+  disc int[1..6] positionX = 4;
+  disc int[1..4] positionY = 1;
+  disc int[0..8] battery = 2;
+  location:
+    initial;
+    marked;
+    edge RoverBMoveUp when positionY < 4 and battery > 0 do positionY := positionY + 1, battery := battery - 1;
+    edge RoverBMoveDown when positionY > 1 and battery > 0 do positionY := positionY - 1, battery := battery - 1;
+    edge RoverBMoveRight when positionX < 6 and battery > 0 do positionX := positionX + 1, battery := battery - 1;
+    edge RoverBMoveLeft when positionX > 1 and battery > 0 do positionX := positionX - 1, battery := battery - 1;
+    edge ChargeBatteryB when ChargeStation1.positionX = positionX and ChargeStation1.positionY = positionY or ChargeStation2.positionX = positionX and ChargeStation2.positionY = positionY do battery := 8;
+end
+group $supervisor:
+  plant automaton ChargeStation1:
+    const int[3..3] positionX = 3;
+    const int[4..4] positionY = 4;
+    location:
+      initial;
+      marked;
+  end
+  plant automaton ChargeStation2:
+    const int[4..4] positionX = 4;
+    const int[1..1] positionY = 1;
+    location:
+      initial;
+      marked;
+  end
+  plant automaton RoverYellow:
+    disc int[1..6] positionX = 3;
+    disc int[1..4] positionY = 4;
+    disc int[0..8] battery = 4;
+    location:
+      initial;
+      marked;
+      edge RoverYMoveUp when positionY < 4 and battery > 0 do positionY := positionY + 1, battery := battery - 1;
+      edge RoverYMoveDown when positionY > 1 and battery > 0 do positionY := positionY - 1, battery := battery - 1;
+      edge RoverYMoveRight when positionX < 6 and battery > 0 do positionX := positionX + 1, battery := battery - 1;
+      edge RoverYMoveLeft when positionX > 1 and battery > 0 do positionX := positionX - 1, battery := battery - 1;
+      edge ChargeBatteryY when ChargeStation1.positionX = positionX and ChargeStation1.positionY = positionY or ChargeStation2.positionX = positionX and ChargeStation2.positionY = positionY do battery := 8;
+  end
+  plant automaton RoverBlue:
+    disc int[1..6] positionX = 4;
+    disc int[1..4] positionY = 1;
+    disc int[0..8] battery = 2;
+    location:
+      initial;
+      marked;
+      edge RoverBMoveUp when positionY < 4 and battery > 0 do positionY := positionY + 1, battery := battery - 1;
+      edge RoverBMoveDown when positionY > 1 and battery > 0 do positionY := positionY - 1, battery := battery - 1;
+      edge RoverBMoveRight when positionX < 6 and battery > 0 do positionX := positionX + 1, battery := battery - 1;
+      edge RoverBMoveLeft when positionX > 1 and battery > 0 do positionX := positionX - 1, battery := battery - 1;
+      edge ChargeBatteryB when ChargeStation1.positionX = positionX and ChargeStation1.positionY = positionY or ChargeStation2.positionX = positionX and ChargeStation2.positionY = positionY do battery := 8;
+  end
+  supervisor automaton sup:
+    alphabet RoverYMoveUp, RoverYMoveDown, RoverYMoveRight, RoverYMoveLeft, ChargeBatteryY, RoverBMoveUp, RoverBMoveDown, RoverBMoveRight, RoverBMoveLeft, ChargeBatteryB;
+    location:
+      initial;
+      marked;
+      edge ChargeBatteryB when true;
+      edge ChargeBatteryY when true;
+      edge RoverBMoveDown when (RoverBlue.positionY != 4 or 1 <= RoverBlue.battery and RoverBlue.battery <= 3 or (5 <= RoverBlue.battery and RoverBlue.battery <= 7 or RoverYellow.positionY != 3)) and ((RoverBlue.positionY != 4 or RoverBlue.battery != 2) and (RoverBlue.positionY != 4 or (RoverBlue.battery != 6 or RoverYellow.positionY != 3))) and ((RoverBlue.positionY != 4 or (RoverBlue.battery = 0 or RoverBlue.battery = 2) or (RoverBlue.battery = 4 or RoverBlue.battery = 6 or (RoverBlue.battery = 8 or RoverYellow.positionY != 3))) and ((RoverBlue.positionY != 2 or 1 <= RoverBlue.battery and RoverBlue.battery <= 3 or (5 <= RoverBlue.battery and RoverBlue.battery <= 7 or RoverYellow.positionY != 1)) and (RoverBlue.positionY != 2 or RoverBlue.battery != 2))) and ((RoverBlue.positionY != 2 or (RoverBlue.battery != 6 or RoverYellow.positionY != 1)) and ((RoverBlue.positionY != 2 or (RoverBlue.battery = 0 or RoverBlue.battery = 2) or (RoverBlue.battery = 4 or RoverBlue.battery = 6 or (RoverBlue.battery = 8 or RoverYellow.positionY != 1))) and (RoverBlue.positionY = 2 or RoverBlue.positionY = 4 or (1 <= RoverBlue.battery and RoverBlue.battery <= 3 or (5 <= RoverBlue.battery and RoverBlue.battery <= 7 or RoverYellow.positionY != 2)))) and ((RoverBlue.positionY = 2 or (RoverBlue.positionY = 4 or RoverBlue.battery != 2)) and ((RoverBlue.positionY = 2 or RoverBlue.positionY = 4 or (RoverBlue.battery != 6 or RoverYellow.positionY != 2)) and (RoverBlue.positionY = 2 or RoverBlue.positionY = 4 or (RoverBlue.battery = 0 or RoverBlue.battery = 2) or (RoverBlue.battery = 4 or RoverBlue.battery = 6 or (RoverBlue.battery = 8 or RoverYellow.positionY != 2))))));
+      edge RoverBMoveLeft when (1 <= RoverBlue.battery and RoverBlue.battery <= 3 or 5 <= RoverBlue.battery and RoverBlue.battery <= 7 or (RoverBlue.positionX != 4 or RoverYellow.positionX != 3)) and (1 <= RoverBlue.battery and RoverBlue.battery <= 3 or 5 <= RoverBlue.battery and RoverBlue.battery <= 7 or (RoverBlue.positionX != 2 or RoverYellow.positionX != 1)) and ((1 <= RoverBlue.battery and RoverBlue.battery <= 3 or 5 <= RoverBlue.battery and RoverBlue.battery <= 7 or (RoverBlue.positionX != 6 or RoverYellow.positionX != 5)) and (1 <= RoverBlue.battery and RoverBlue.battery <= 3 or 5 <= RoverBlue.battery and RoverBlue.battery <= 7 or (2 <= RoverBlue.positionX and RoverBlue.positionX <= 4 or (RoverBlue.positionX = 6 or RoverYellow.positionX != 4)))) and ((1 <= RoverBlue.battery and RoverBlue.battery <= 3 or 5 <= RoverBlue.battery and RoverBlue.battery <= 7 or (RoverBlue.positionX != 3 or RoverYellow.positionX != 2)) and RoverBlue.battery != 2 and ((RoverBlue.battery != 6 or (RoverBlue.positionX != 4 or RoverYellow.positionX != 3)) and (RoverBlue.battery != 6 or (RoverBlue.positionX != 2 or RoverYellow.positionX != 1)))) and ((RoverBlue.battery != 6 or (RoverBlue.positionX != 6 or RoverYellow.positionX != 5)) and (RoverBlue.battery != 6 or 2 <= RoverBlue.positionX and RoverBlue.positionX <= 4 or (RoverBlue.positionX = 6 or RoverYellow.positionX != 4)) and ((RoverBlue.battery != 6 or (RoverBlue.positionX != 3 or RoverYellow.positionX != 2)) and (RoverBlue.battery = 0 or (RoverBlue.battery = 2 or RoverBlue.battery = 4) or (RoverBlue.battery = 6 or RoverBlue.battery = 8 or (RoverBlue.positionX != 4 or RoverYellow.positionX != 3)))) and ((RoverBlue.battery = 0 or (RoverBlue.battery = 2 or RoverBlue.battery = 4) or (RoverBlue.battery = 6 or RoverBlue.battery = 8 or (RoverBlue.positionX != 2 or RoverYellow.positionX != 1))) and (RoverBlue.battery = 0 or (RoverBlue.battery = 2 or RoverBlue.battery = 4) or (RoverBlue.battery = 6 or RoverBlue.battery = 8 or (RoverBlue.positionX != 6 or RoverYellow.positionX != 5))) and ((RoverBlue.battery = 0 or RoverBlue.battery = 2 or (RoverBlue.battery = 4 or RoverBlue.battery = 6) or (RoverBlue.battery = 8 or 2 <= RoverBlue.positionX and RoverBlue.positionX <= 4 or (RoverBlue.positionX = 6 or RoverYellow.positionX != 4))) and (RoverBlue.battery = 0 or (RoverBlue.battery = 2 or RoverBlue.battery = 4) or (RoverBlue.battery = 6 or RoverBlue.battery = 8 or (RoverBlue.positionX != 3 or RoverYellow.positionX != 2))))));
+      edge RoverBMoveRight when (1 <= RoverBlue.battery and RoverBlue.battery <= 3 or 5 <= RoverBlue.battery and RoverBlue.battery <= 7 or (RoverBlue.positionX != 4 or RoverYellow.positionX != 5)) and (1 <= RoverBlue.battery and RoverBlue.battery <= 3 or 5 <= RoverBlue.battery and RoverBlue.battery <= 7 or (RoverBlue.positionX = 1 or (3 <= RoverBlue.positionX and RoverBlue.positionX <= 5 or RoverYellow.positionX != 3))) and ((1 <= RoverBlue.battery and RoverBlue.battery <= 3 or 5 <= RoverBlue.battery and RoverBlue.battery <= 7 or (RoverBlue.positionX != 1 or RoverYellow.positionX != 2)) and (1 <= RoverBlue.battery and RoverBlue.battery <= 3 or 5 <= RoverBlue.battery and RoverBlue.battery <= 7 or (RoverBlue.positionX != 5 or RoverYellow.positionX != 6))) and ((1 <= RoverBlue.battery and RoverBlue.battery <= 3 or 5 <= RoverBlue.battery and RoverBlue.battery <= 7 or (RoverBlue.positionX != 3 or RoverYellow.positionX != 4)) and RoverBlue.battery != 2 and ((RoverBlue.battery != 6 or (RoverBlue.positionX != 4 or RoverYellow.positionX != 5)) and (RoverBlue.battery != 6 or RoverBlue.positionX = 1 or (3 <= RoverBlue.positionX and RoverBlue.positionX <= 5 or RoverYellow.positionX != 3)))) and ((RoverBlue.battery != 6 or (RoverBlue.positionX != 1 or RoverYellow.positionX != 2)) and (RoverBlue.battery != 6 or (RoverBlue.positionX != 5 or RoverYellow.positionX != 6)) and ((RoverBlue.battery != 6 or (RoverBlue.positionX != 3 or RoverYellow.positionX != 4)) and (RoverBlue.battery = 0 or (RoverBlue.battery = 2 or RoverBlue.battery = 4) or (RoverBlue.battery = 6 or RoverBlue.battery = 8 or (RoverBlue.positionX != 4 or RoverYellow.positionX != 5)))) and ((RoverBlue.battery = 0 or RoverBlue.battery = 2 or (RoverBlue.battery = 4 or RoverBlue.battery = 6) or (RoverBlue.battery = 8 or RoverBlue.positionX = 1 or (3 <= RoverBlue.positionX and RoverBlue.positionX <= 5 or RoverYellow.positionX != 3))) and (RoverBlue.battery = 0 or (RoverBlue.battery = 2 or RoverBlue.battery = 4) or (RoverBlue.battery = 6 or RoverBlue.battery = 8 or (RoverBlue.positionX != 1 or RoverYellow.positionX != 2))) and ((RoverBlue.battery = 0 or (RoverBlue.battery = 2 or RoverBlue.battery = 4) or (RoverBlue.battery = 6 or RoverBlue.battery = 8 or (RoverBlue.positionX != 5 or RoverYellow.positionX != 6))) and (RoverBlue.battery = 0 or (RoverBlue.battery = 2 or RoverBlue.battery = 4) or (RoverBlue.battery = 6 or RoverBlue.battery = 8 or (RoverBlue.positionX != 3 or RoverYellow.positionX != 4))))));
+      edge RoverBMoveUp when (RoverBlue.positionY = 1 or RoverBlue.positionY = 3 or (1 <= RoverBlue.battery and RoverBlue.battery <= 3 or (5 <= RoverBlue.battery and RoverBlue.battery <= 7 or RoverYellow.positionY != 3))) and ((RoverBlue.positionY = 1 or (RoverBlue.positionY = 3 or RoverBlue.battery != 2)) and (RoverBlue.positionY = 1 or RoverBlue.positionY = 3 or (RoverBlue.battery != 6 or RoverYellow.positionY != 3))) and ((RoverBlue.positionY = 1 or RoverBlue.positionY = 3 or (RoverBlue.battery = 0 or RoverBlue.battery = 2) or (RoverBlue.battery = 4 or RoverBlue.battery = 6 or (RoverBlue.battery = 8 or RoverYellow.positionY != 3))) and ((RoverBlue.positionY != 1 or 1 <= RoverBlue.battery and RoverBlue.battery <= 3 or (5 <= RoverBlue.battery and RoverBlue.battery <= 7 or RoverYellow.positionY != 2)) and (RoverBlue.positionY != 1 or RoverBlue.battery != 2))) and ((RoverBlue.positionY != 1 or (RoverBlue.battery != 6 or RoverYellow.positionY != 2)) and ((RoverBlue.positionY != 1 or (RoverBlue.battery = 0 or RoverBlue.battery = 2) or (RoverBlue.battery = 4 or RoverBlue.battery = 6 or (RoverBlue.battery = 8 or RoverYellow.positionY != 2))) and (RoverBlue.positionY != 3 or 1 <= RoverBlue.battery and RoverBlue.battery <= 3 or (5 <= RoverBlue.battery and RoverBlue.battery <= 7 or RoverYellow.positionY != 4))) and ((RoverBlue.positionY != 3 or RoverBlue.battery != 2) and ((RoverBlue.positionY != 3 or (RoverBlue.battery != 6 or RoverYellow.positionY != 4)) and (RoverBlue.positionY != 3 or (RoverBlue.battery = 0 or RoverBlue.battery = 2) or (RoverBlue.battery = 4 or RoverBlue.battery = 6 or (RoverBlue.battery = 8 or RoverYellow.positionY != 4))))));
+      edge RoverYMoveDown when (RoverBlue.positionY != 4 or RoverYellow.battery != 2) and ((RoverBlue.positionY != 2 or 1 <= RoverYellow.battery and RoverYellow.battery <= 3 or (5 <= RoverYellow.battery and RoverYellow.battery <= 7 or (RoverYellow.positionY = 2 or RoverYellow.positionY = 4))) and (RoverBlue.positionY != 2 or RoverYellow.battery != 2)) and ((RoverBlue.positionY != 2 or RoverYellow.battery != 6 or (RoverYellow.positionY = 2 or RoverYellow.positionY = 4)) and ((RoverBlue.positionY != 2 or RoverYellow.battery = 0 or (RoverYellow.battery = 2 or RoverYellow.battery = 4) or (RoverYellow.battery = 6 or RoverYellow.battery = 8 or (RoverYellow.positionY = 2 or RoverYellow.positionY = 4))) and (RoverBlue.positionY != 1 or 1 <= RoverYellow.battery and RoverYellow.battery <= 3 or (5 <= RoverYellow.battery and RoverYellow.battery <= 7 or RoverYellow.positionY != 2)))) and ((RoverBlue.positionY != 1 or RoverYellow.battery != 2) and ((RoverBlue.positionY != 1 or (RoverYellow.battery != 6 or RoverYellow.positionY != 2)) and (RoverBlue.positionY != 1 or (RoverYellow.battery = 0 or RoverYellow.battery = 2) or (RoverYellow.battery = 4 or RoverYellow.battery = 6 or (RoverYellow.battery = 8 or RoverYellow.positionY != 2)))) and ((RoverBlue.positionY != 3 or 1 <= RoverYellow.battery and RoverYellow.battery <= 3 or (5 <= RoverYellow.battery and RoverYellow.battery <= 7 or (RoverYellow.positionY = 2 or RoverYellow.positionY = 3))) and (RoverBlue.positionY != 3 or RoverYellow.battery != 2) and ((RoverBlue.positionY != 3 or RoverYellow.battery != 6 or (RoverYellow.positionY = 2 or RoverYellow.positionY = 3)) and (RoverBlue.positionY != 3 or RoverYellow.battery = 0 or (RoverYellow.battery = 2 or RoverYellow.battery = 4) or (RoverYellow.battery = 6 or RoverYellow.battery = 8 or (RoverYellow.positionY = 2 or RoverYellow.positionY = 3))))));
+      edge RoverYMoveLeft when (RoverBlue.positionX != 4 or RoverYellow.positionX = 1 or (RoverYellow.positionX = 3 or (RoverYellow.positionX = 5 or RoverYellow.battery != 2))) and (RoverBlue.positionX != 4 or (2 <= RoverYellow.positionX and RoverYellow.positionX <= 4 or RoverYellow.positionX = 6)) and ((RoverBlue.positionX != 4 or (RoverYellow.positionX != 3 or RoverYellow.battery != 2)) and (RoverBlue.positionX != 2 or RoverYellow.positionX = 1 or (RoverYellow.positionX = 3 or (RoverYellow.positionX = 5 or RoverYellow.battery != 2)))) and ((RoverBlue.positionX != 2 or (RoverYellow.positionX = 2 or 4 <= RoverYellow.positionX and RoverYellow.positionX <= 6)) and (RoverBlue.positionX != 2 or (RoverYellow.positionX != 5 or RoverYellow.battery != 2)) and ((RoverBlue.positionX != 6 or RoverYellow.battery != 2) and (RoverBlue.positionX != 1 or RoverYellow.positionX != 2))) and ((RoverBlue.positionX != 1 or 1 <= RoverYellow.positionX and RoverYellow.positionX <= 3 or (RoverYellow.positionX = 5 or RoverYellow.battery != 2)) and (RoverBlue.positionX != 1 or RoverYellow.positionX = 2 or (RoverYellow.positionX = 4 or (RoverYellow.positionX = 6 or RoverYellow.battery != 2))) and ((RoverBlue.positionX != 5 or (RoverYellow.positionX != 4 or RoverYellow.battery != 2)) and (RoverBlue.positionX != 5 or (RoverYellow.positionX != 2 or RoverYellow.battery != 2))) and ((RoverBlue.positionX != 5 or RoverYellow.positionX != 6) and (RoverBlue.positionX != 5 or RoverYellow.positionX = 2 or (RoverYellow.positionX = 4 or (RoverYellow.positionX = 6 or RoverYellow.battery != 2))) and ((RoverBlue.positionX != 3 or RoverYellow.positionX != 4) and ((RoverBlue.positionX != 3 or RoverYellow.positionX = 1 or (3 <= RoverYellow.positionX and RoverYellow.positionX <= 5 or RoverYellow.battery != 2)) and (RoverBlue.positionX != 3 or RoverYellow.positionX = 2 or (RoverYellow.positionX = 4 or (RoverYellow.positionX = 6 or RoverYellow.battery != 2)))))));
+      edge RoverYMoveRight when (RoverBlue.positionX != 4 or RoverYellow.positionX = 1 or (RoverYellow.positionX = 3 or (RoverYellow.positionX = 5 or RoverYellow.battery != 2))) and (RoverBlue.positionX != 4 or 2 <= RoverYellow.positionX and RoverYellow.positionX <= 4 or (RoverYellow.positionX = 6 or RoverYellow.battery != 2)) and ((RoverBlue.positionX != 4 or RoverYellow.positionX != 3) and (RoverBlue.positionX != 2 or RoverYellow.positionX = 1 or (RoverYellow.positionX = 3 or (RoverYellow.positionX = 5 or RoverYellow.battery != 2)))) and ((RoverBlue.positionX != 2 or RoverYellow.positionX != 1) and (RoverBlue.positionX != 2 or (RoverYellow.positionX != 5 or RoverYellow.battery != 2)) and ((RoverBlue.positionX != 2 or (RoverYellow.positionX != 3 or RoverYellow.battery != 2)) and (RoverBlue.positionX != 6 or RoverYellow.positionX = 1 or (RoverYellow.positionX = 3 or (RoverYellow.positionX = 5 or RoverYellow.battery != 2))))) and ((RoverBlue.positionX != 6 or RoverYellow.positionX = 2 or (4 <= RoverYellow.positionX and RoverYellow.positionX <= 6 or RoverYellow.battery != 2)) and (RoverBlue.positionX != 6 or RoverYellow.positionX != 5) and ((RoverBlue.positionX != 1 or RoverYellow.battery != 2) and (RoverBlue.positionX != 5 or (RoverYellow.positionX != 2 or RoverYellow.battery != 2))) and ((RoverBlue.positionX != 5 or (1 <= RoverYellow.positionX and RoverYellow.positionX <= 3 or RoverYellow.positionX = 5)) and (RoverBlue.positionX != 5 or RoverYellow.positionX = 2 or (RoverYellow.positionX = 4 or (RoverYellow.positionX = 6 or RoverYellow.battery != 2))) and ((RoverBlue.positionX != 3 or (RoverYellow.positionX != 4 or RoverYellow.battery != 2)) and ((RoverBlue.positionX != 3 or (RoverYellow.positionX = 1 or 3 <= RoverYellow.positionX and RoverYellow.positionX <= 5)) and (RoverBlue.positionX != 3 or RoverYellow.positionX = 2 or (RoverYellow.positionX = 4 or (RoverYellow.positionX = 6 or RoverYellow.battery != 2)))))));
+      edge RoverYMoveUp when (RoverBlue.positionY != 4 or 1 <= RoverYellow.battery and RoverYellow.battery <= 3 or (5 <= RoverYellow.battery and RoverYellow.battery <= 7 or RoverYellow.positionY != 3)) and ((RoverBlue.positionY != 4 or RoverYellow.battery != 2) and (RoverBlue.positionY != 4 or (RoverYellow.battery != 6 or RoverYellow.positionY != 3))) and ((RoverBlue.positionY != 4 or (RoverYellow.battery = 0 or RoverYellow.battery = 2) or (RoverYellow.battery = 4 or RoverYellow.battery = 6 or (RoverYellow.battery = 8 or RoverYellow.positionY != 3))) and ((RoverBlue.positionY != 2 or 1 <= RoverYellow.battery and RoverYellow.battery <= 3 or (5 <= RoverYellow.battery and RoverYellow.battery <= 7 or (RoverYellow.positionY = 2 or RoverYellow.positionY = 3))) and (RoverBlue.positionY != 2 or RoverYellow.battery != 2))) and ((RoverBlue.positionY != 2 or RoverYellow.battery != 6 or (RoverYellow.positionY = 2 or RoverYellow.positionY = 3)) and ((RoverBlue.positionY != 2 or RoverYellow.battery = 0 or (RoverYellow.battery = 2 or RoverYellow.battery = 4) or (RoverYellow.battery = 6 or RoverYellow.battery = 8 or (RoverYellow.positionY = 2 or RoverYellow.positionY = 3))) and (RoverBlue.positionY != 1 or RoverYellow.battery != 2)) and ((RoverBlue.positionY != 3 or 1 <= RoverYellow.battery and RoverYellow.battery <= 3 or (5 <= RoverYellow.battery and RoverYellow.battery <= 7 or (RoverYellow.positionY = 1 or RoverYellow.positionY = 3))) and (RoverBlue.positionY != 3 or RoverYellow.battery != 2) and ((RoverBlue.positionY != 3 or RoverYellow.battery != 6 or (RoverYellow.positionY = 1 or RoverYellow.positionY = 3)) and (RoverBlue.positionY != 3 or RoverYellow.battery = 0 or (RoverYellow.battery = 2 or RoverYellow.battery = 4) or (RoverYellow.battery = 6 or RoverYellow.battery = 8 or (RoverYellow.positionY = 1 or RoverYellow.positionY = 3))))));
+  end
+  supervisor invariant R2: RoverYellow.battery >= 2 and RoverBlue.battery >= 2;
+  supervisor invariant R5_1: ChargeBatteryY needs RoverYellow.battery < 8;
+  supervisor invariant R5_2: ChargeBatteryB needs RoverBlue.battery < 8;
+  supervisor invariant R6: RoverYellow.positionX != RoverBlue.positionX and RoverYellow.positionY != RoverBlue.positionY;
+end
+svgout id "yellow-cell-1" attr "fill" value if RoverYellow.battery < 1: "lightgray" else "yellow" end file "plant.svg";
+svgout id "yellow-cell-2" attr "fill" value if RoverYellow.battery < 2: "lightgray" else "yellow" end file "plant.svg";
+svgout id "yellow-cell-3" attr "fill" value if RoverYellow.battery < 3: "lightgray" else "yellow" end file "plant.svg";
+svgout id "yellow-cell-4" attr "fill" value if RoverYellow.battery < 4: "lightgray" else "yellow" end file "plant.svg";
+svgout id "yellow-cell-5" attr "fill" value if RoverYellow.battery < 5: "lightgray" else "yellow" end file "plant.svg";
+svgout id "yellow-cell-6" attr "fill" value if RoverYellow.battery < 6: "lightgray" else "yellow" end file "plant.svg";
+svgout id "yellow-cell-7" attr "fill" value if RoverYellow.battery < 7: "lightgray" else "yellow" end file "plant.svg";
+svgout id "yellow-cell-8" attr "fill" value if RoverYellow.battery < 8: "lightgray" else "yellow" end file "plant.svg";
+svgout id "yellow_rover" attr "x" value (RoverYellow.positionX - 1) * 100 file "plant.svg";
+svgout id "yellow_rover" attr "y" value 300 - (RoverYellow.positionY - 1) * 100 file "plant.svg";
+svgout id "x-axis-ry" text value RoverYellow.positionX file "plant.svg";
+svgout id "y-axis-ry" text value RoverYellow.positionY file "plant.svg";
+svgout id "blue-cell-1" attr "fill" value if RoverBlue.battery < 1: "lightgray" else "blue" end file "plant.svg";
+svgout id "blue-cell-2" attr "fill" value if RoverBlue.battery < 2: "lightgray" else "blue" end file "plant.svg";
+svgout id "blue-cell-3" attr "fill" value if RoverBlue.battery < 3: "lightgray" else "blue" end file "plant.svg";
+svgout id "blue-cell-4" attr "fill" value if RoverBlue.battery < 4: "lightgray" else "blue" end file "plant.svg";
+svgout id "blue-cell-5" attr "fill" value if RoverBlue.battery < 5: "lightgray" else "blue" end file "plant.svg";
+svgout id "blue-cell-6" attr "fill" value if RoverBlue.battery < 6: "lightgray" else "blue" end file "plant.svg";
+svgout id "blue-cell-7" attr "fill" value if RoverBlue.battery < 7: "lightgray" else "blue" end file "plant.svg";
+svgout id "blue-cell-8" attr "fill" value if RoverBlue.battery < 8: "lightgray" else "blue" end file "plant.svg";
+svgout id "blue_rover" attr "x" value (RoverBlue.positionX - 1) * 100 file "plant.svg";
+svgout id "blue_rover" attr "y" value 300 - (RoverBlue.positionY - 1) * 100 file "plant.svg";
+svgout id "x-axis-rb" text value RoverBlue.positionX file "plant.svg";
+svgout id "y-axis-rb" text value RoverBlue.positionY file "plant.svg";

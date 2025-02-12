@@ -1,0 +1,3112 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>requirements | Eclipse ESCET</title>
+        <style type="text/css">
+            /* ESCET theme styles. */
+            html, body {
+                margin: 0;
+                background-color: #fff7df; /* ESCET website yellow. */
+                font-family: "Segoe UI";
+                line-height: 1.5;
+                height: 100%;
+            }
+
+            a {
+                color: #cc9a06;
+            }
+
+            a:hover {
+                color: black;
+            }
+
+            input[type=button] {
+                background-color: #ffc107;
+                border: 0;
+                box-shadow: none;
+                padding: .375rem .75rem;
+                border-radius: .25rem;
+                cursor: pointer;
+            }
+
+            input[type=button]:hover {
+                background-color: #ffda6d;
+            }
+        </style>
+        <style type="text/css">
+            body {
+                text-align: center;
+            }
+
+            #flex-container {
+                display: flex;
+                flex-flow: column;
+                height: 100%;
+            }
+
+            #content {
+                flex: 1 1 auto;
+                overflow: auto;
+            }
+
+            #log-pane {
+                border-top: 2px solid #ddd;
+                min-height: 20px;
+                background: #fafafa;
+            }
+            #log-pane .div-show-hide-btn {
+                height: 42px;
+                padding-top: 5px;
+                text-align: right;
+                width: 100%;
+                border-bottom: 1px solid #ddd;
+            }
+
+            #log-pane .div-show-hide-btn span {
+                margin-right: 10px;
+            }
+            #log-pane #div-txt-area-background {
+                height: calc(100% - 57px);
+                background: #fff;
+            }
+            #log-pane .div-txt-area {
+                margin: 0 10px;
+                height: 100%;
+            }
+            #log-pane .div-txt-area #log-output {
+                resize: none;
+                height: 100%;
+                width: 100%;
+                overflow: auto;
+            }
+            #log-pane .div-txt-area #log-output,
+            #log-pane .div-txt-area #log-output * {
+                border: 0;
+                margin: 0;
+                padding: 0;
+                background: white;
+                font-family: monospace;
+                text-align: left;
+                text-wrap: nowrap;
+                white-space: pre;
+                color: black;
+            }
+            #log-pane .div-txt-area #log-output * {
+                height: auto;
+            }
+            #log-pane .div-txt-area #log-output .warning {
+                color: rgb(150, 125, 0);
+            }
+            #log-pane .div-txt-area #log-output .error {
+                color: red;
+            }
+            #log-pane #div-log-pane-footer {
+                background: #fafafa;
+                border-top: 1px solid #ddd;
+            }
+
+            .dropdown {
+                position: relative;
+                display: inline-block;
+            }
+            .dropdown-content {
+                display: none;
+                position: absolute;
+                background-color: #fafafa;
+                border: solid 1px #ddd;
+                box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.2);
+                z-index: 1;
+            }
+            .dropdown-content .dropdown-item {
+                color: black;
+                text-align: left;
+                text-wrap: nowrap;
+                margin: 0;
+                padding: 0;
+                display: flex;
+            }
+            .dropdown-content .dropdown-item.dropdown-item-checked label {
+                padding: 10px 16px;
+                display: inline-flex;
+                flex-grow: 1;
+            }
+            .dropdown-content .dropdown-item.dropdown-item-checked input {
+                margin: 0;
+                padding: 0;
+            }
+            .dropdown-content .dropdown-item.dropdown-item-checked .dropdown-item-checked-text {
+                padding-left: 8px;
+            }
+            .dropdown-content .dropdown-item:hover {
+                background-color: #eee;
+            }
+            .dropdown.expanded .dropdown-content {
+                display: block;
+            }
+
+            .collapsed #log-pane {
+                height: 48px;
+                flex: none;
+            }
+            .expanded #log-pane {
+                height: 40%;
+                flex: 1 1 auto;
+            }
+            .collapsed #content {
+                resize: none;
+            }
+            .expanded #content {
+                resize: vertical;
+            }
+
+            .collapsed #div-txt-area-background,
+            .collapsed #div-log-pane-footer {
+                display: none;
+            }
+            .expanded #div-txt-area-background,
+            .expanded #div-log-pane-footer {
+                display: inherit;
+            }
+
+            #run-frequency {
+                width: 250px;
+            }
+
+            svg {
+                background: white;
+                margin-bottom: 8px;
+            }
+
+            .svg-hidden {
+                visibility: hidden;
+                display: none;
+            }
+
+            .svg-visible {
+                visibility: visible;
+                display: block;
+            }
+
+            /* Defaults for SVG text elements, for same size and style as used by the CIF simulator. */
+            .text {
+                font-style: normal;
+                font-variant: normal;
+                font-weight: normal;
+                font-stretch: normal;
+                font-size: 11.8014px;
+                font-family: "Arial";
+            }
+
+
+        </style>
+        <script type="text/javascript">
+/**
+ * requirements exception.
+ *
+ * <p>Indices a runtime error while executing the generated code.</p>
+ */
+function requirementsException(message = "", cause = null) {
+    this.name = "requirementsException";
+    this.message = message;
+    this.cause = cause;
+}
+requirementsException.prototype = Error.prototype;
+
+/** requirements utility code. */
+class requirementsUtils {
+
+    static MIN_INT = -2147483648; // Java 'int' minimum value.
+    static MAX_INT = 2147483647; // Java 'int' maximum value.
+
+    /**
+     * Returns the absolute value of an integer number.
+     *
+     * @param {number} x - The integer number.
+     * @return {number} `abs(x)`.
+     * @throws {requirementsException} If the operation results in integer overflow.
+     */
+    static absInt(x) {
+        if (x == requirementsUtils.MIN_INT) {
+            throw new requirementsException(requirementsUtils.fmt("Integer overflow: abs(%d).", x));
+        }
+        return Math.abs(x);
+    }
+
+    /**
+     * Returns the absolute value of a real number.
+     *
+     * @param {number} x - The real number.
+     * @return {number} `abs(x)`.
+     */
+    static absReal(x) {
+        return Math.abs(x);
+    }
+
+    /**
+     * Returns the arc cosine of a real number.
+     *
+     * @param {number} x - The real number.
+     * @return {number} `acos(x)`.
+     * @throws {requirementsException} If the operation results in real overflow, or `NaN`.
+     */
+    static acos(x) {
+        var rslt = Math.acos(x);
+        if (!Number.isFinite(rslt)) {
+            throw new requirementsException(requirementsUtils.fmt("Real overflow: acos(%s).",
+                requirementsUtils.realToStr(x)));
+        }
+        if (Number.isNaN(rslt)) {
+            throw new requirementsException(requirementsUtils.fmt("Invalid operation: acos(%s).",
+                requirementsUtils.realToStr(x)));
+        }
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns the arc sine of a real number.
+     *
+     * @param {number} x - The real number.
+     * @return {number} `asin(x)`.
+     * @throws {requirementsException} If the operation results in real overflow, or `NaN`.
+     */
+    static asin(x) {
+        var rslt = Math.asin(x);
+        if (!Number.isFinite(rslt)) {
+            throw new requirementsException(requirementsUtils.fmt("Real overflow: asin(%s).",
+                requirementsUtils.realToStr(x)));
+        }
+        if (Number.isNaN(rslt)) {
+            throw new requirementsException(requirementsUtils.fmt("Invalid operation: asin(%s).",
+                requirementsUtils.realToStr(x)));
+        }
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns the arc tangent of a real number.
+     *
+     * @param {number} x - The real number.
+     * @return {number} `atan(x)`.
+     * @throws {requirementsException} If the operation results in real overflow, or `NaN`.
+     */
+    static atan(x) {
+        var rslt = Math.atan(x);
+        if (!Number.isFinite(rslt)) {
+            throw new requirementsException(requirementsUtils.fmt("Real overflow: atan(%s).",
+                requirementsUtils.realToStr(x)));
+        }
+        if (Number.isNaN(rslt)) {
+            throw new requirementsException(requirementsUtils.fmt("Invalid operation: atan(%s).",
+                requirementsUtils.realToStr(x)));
+        }
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns the addition of two integer numbers.
+     *
+     * @param {number} x - The first integer number.
+     * @param {number} y - The second integer number.
+     * @return {number} `x + y`.
+     * @throws {requirementsException} If the operation results in integer overflow.
+     */
+    static addInt(x, y) {
+        var rslt = x + y;
+        if (requirementsUtils.MIN_INT <= rslt && rslt <= requirementsUtils.MAX_INT) {
+            return (rslt == -0.0) ? 0.0 : rslt;
+        }
+
+        throw new requirementsException(requirementsUtils.fmt("Integer overflow: %d + %d.", x, y));
+    }
+
+    /**
+     * Returns the addition of two real numbers.
+     *
+     * @param {number} x - The first real number.
+     * @param {number} y - The second real number.
+     * @return {number} `x + y`.
+     * @throws {requirementsException} If the operation results in real overflow.
+     */
+    static addReal(x, y) {
+        var rslt = x + y;
+        if (!Number.isFinite(rslt)) {
+            throw new requirementsException(requirementsUtils.fmt("Real overflow: %s + %s.",
+                requirementsUtils.realToStr(x), requirementsUtils.realToStr(y)));
+        }
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns the addition of two strings.
+     *
+     * @param {string} x - The first string.
+     * @param {string} y - The second string.
+     * @return {string} `x + y`.
+     */
+    static addString(x, y) {
+        return x + y;
+    }
+
+    /**
+     * Converts a JavaScript Boolean to a CIF boolean value literal, in the CIF ASCII representation.
+     *
+     * @param {boolean} x - The JavaScript Boolean value.
+     * @return {string} The CIF boolean value literal, in the CIF ASCII representation.
+     */
+    static boolToStr(x) {
+        return x ? "true" : "false";
+    }
+
+    /**
+     * Returns the cube root of a real number.
+     *
+     * @param {number} x - The real number.
+     * @return {number} `cbrt(x)`.
+     */
+    static cbrt(x) {
+        var rslt = Math.cbrt(x);
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns the ceil of a real number.
+     *
+     * @param {number} x - The real number.
+     * @return {number} `ceil(x)`.
+     * @throws {requirementsException} If the operation results in integer overflow.
+     */
+    static ceil(x) {
+        var rslt = Math.ceil(x);
+        if (rslt < requirementsUtils.MIN_INT || rslt > requirementsUtils.MAX_INT) {
+            throw new requirementsException(requirementsUtils.fmt("Integer overflow: ceil(%s).",
+                requirementsUtils.realToStr(x)));
+        }
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Checks a real value to ensure it is not `NaN` or infinite.
+     *
+     * @param {number} value - The real value to check.
+     * @param {string} name - The name of the CIF variable that contains the value.
+     */
+    static checkReal(value, name) {
+        if (Number.isFinite(value)) return;
+
+        var msg;
+        if (Number.isNaN(value)) {
+            msg = "NaN";
+        } else if (value == Number.POSITIVE_INFINITY) {
+            msg = "+inf";
+        } else {
+            msg = "-inf";
+        }
+        throw new requirementsException(requirementsUtils.fmt("The value of variable \"%s\" has become \"%s\".", name, msg));
+    }
+
+    /**
+     * Creates and returns a shallow copy of a list.
+     *
+     * @param {array} lst - The list to copy.
+     * @return {array} The shallow copy of the list.
+     */
+    static copy(lst) {
+        var rslt = [];
+        for (var i = 0; i < lst.length; i++) {
+            rslt.push(lst[i]);
+        };
+        return rslt;
+    }
+
+    /**
+     * Returns the cosine of a real number.
+     *
+     * @param {number} x - The real number.
+     * @return {number} `cos(x)`.
+     * @throws {requirementsException} If the operation results in real overflow, or `NaN`.
+     */
+    static cos(x) {
+        var rslt = Math.cos(x);
+        if (!Number.isFinite(rslt)) {
+            throw new requirementsException(requirementsUtils.fmt("Real overflow: cos(%s).",
+                requirementsUtils.realToStr(x)));
+        }
+        if (Number.isNaN(rslt)) {
+            throw new requirementsException(requirementsUtils.fmt("Invalid operation: cos(%s).",
+                requirementsUtils.realToStr(x)));
+        }
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns the integer division of two integer numbers.
+     *
+     * @param {number} x - The dividend.
+     * @param {number} y - The divisor.
+     * @return {number} `x div y`.
+     * @throws {requirementsException} If the operation results in integer overflow, or division by zero.
+     */
+    static div(x, y) {
+        if (y == 0) {
+            throw new requirementsException(requirementsUtils.fmt("Division by zero: %d div %d.", x, y));
+        }
+        if (x == requirementsUtils.MIN_INT && y == -1) {
+            throw new requirementsException(requirementsUtils.fmt("Integer overflow: %d div %d.", x, y));
+        }
+        var rslt = Math.trunc(Math.trunc(x) / Math.trunc(y));
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns the real division of two real numbers.
+     *
+     * @param {number} x - The first real number.
+     * @param {number} y - The second real number.
+     * @return {number} `x / y`.
+     * @throws {requirementsException} If the operation results in real overflow, or division by zero.
+     */
+    static divide(x, y) {
+        if (y == 0.0) {
+            throw new requirementsException(requirementsUtils.fmt("Division by zero: %s / %s.",
+                requirementsUtils.realToStr(x), requirementsUtils.realToStr(y)));
+        }
+        var rslt = x / y;
+        if (!Number.isFinite(rslt)) {
+            throw new requirementsException(requirementsUtils.fmt("Real overflow: %s * %s.",
+                requirementsUtils.realToStr(x), requirementsUtils.realToStr(y)));
+        }
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns empty(x) for the given list.
+     *
+     * @param {array} x - The list.
+     * @return {boolean} `empty(x)`.
+     */
+    static empty(x) {
+        return x.length <= 0;
+    }
+
+    /**
+     * Returns `true` if the arguments are equal to each other and `false` otherwise.
+     * Can handle `null` values.
+     *
+     * @param {object} obj1 - The first object.
+     * @param {object} obj2 - The second object.
+     * @return {boolean} `true` if the arguments are equal to each other, `false` otherwise.
+     */
+    static equalObjs(obj1, obj2) {
+        return obj1 === obj2;
+    }
+
+    /**
+     * Returns a backslash escaped version of the string. That is:
+     * <ul>
+     * <li>backslash (`"\\"`) becomes `"\\\\"`</li>
+     * <li>new line (`"\n"`) becomes `"\\n"`</li>
+     * <li>tab (`"\t"`) becomes `"\\t"`</li>
+     * <li>double quotes (`"\""`) becomes `"\\\""`</li>
+     * </ul>
+     *
+     * @param {string} s - The string value to escape.
+     * @return {string} The backslash escaped string value.
+     */
+    static escape(s) {
+        return s.toString().replaceAll("\\", "\\\\")
+            .replaceAll("\n", "\\n")
+            .replaceAll("\t", "\\t")
+            .replaceAll("\"", "\\\"");
+    }
+
+    /**
+     * Returns an HTML-escaped version of the string.
+     *
+     * @param {string} s - The string value to escape.
+     * @return {string} The escaped string value.
+     */
+    static escapeHtml(s) {
+        return s.toString()
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&apos;");
+    }
+
+    /**
+     * Returns `e`<sup>`x`</sup> of a real number `x`.
+     *
+     * @param {number} x - The real number.
+     * @return {number} `exp(x)`.
+     * @throws {requirementsException} If the operation results in real overflow.
+     */
+    static exp(x) {
+        var rslt = Math.exp(x);
+        if (!Number.isFinite(rslt)) {
+            throw new requirementsException(requirementsUtils.fmt("Real overflow: exp(%s).",
+                requirementsUtils.realToStr(x)));
+        }
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns the floor of a real number.
+     *
+     * @param {number} x - The real number.
+     * @return {number} `floor(x)`.
+     * @throws {requirementsException} If the operation results in integer overflow.
+     */
+    static floor(x) {
+        var rslt = Math.floor(x);
+        if (rslt < requirementsUtils.MIN_INT || rslt > requirementsUtils.MAX_INT) {
+            throw new requirementsException(requirementsUtils.fmt("Integer overflow: floor(%s).",
+                requirementsUtils.realToStr(x)));
+        }
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns a formatted string using the specified format string and arguments.
+     *
+     * <p>No localization is applied, which defaults to the US locale.</p>
+     *
+     * @param {string} format - A format/pattern string.
+     * @param {array} args - The arguments referenced by the format specifiers in the format string.
+     * @return {string} A formatted string.
+     */
+    static fmt(str) {
+        // TODO: CIF supports more than what is handled here. Full support is to be added in the future.
+        var i = 1;
+        var hexRegex = /%[Xx]/;
+        var realRegex = /%[GgEe]/;
+        var floatRegex = /%(\.(\d+))?f/;
+        var percentRegex = /%%/;
+        return str.replace(/%[Bb]|%[Xx]|%[GgEe]|%[Ss]|%d|%(\.(\d+))?f|%%/g, (matched) => {
+            if (hexRegex.test(matched)) {
+                return arguments[i++].toString(16);
+            } else if (realRegex.test(matched)) {
+                return arguments[i++].toExponential();
+            } else if (floatRegex.test(matched)) {
+                // JavaScript uses 'toFixed' to format floats.
+                var digits = matched.match(floatRegex)[2];
+                if (digits) {
+                    return arguments[i++].toFixed(digits);
+                } else {
+                    return arguments[i++];
+                }
+            } else if (percentRegex.test(matched)) {
+                return '%';
+            }
+            return arguments[i++].toString();
+        });
+    }
+
+    /**
+     * Converts a JavaScript Number representing an integer value to a JavaScript Number representing a real value.
+     *
+     * @param {number} x - The JavaScript Number value representing an integer value.
+     * @return {number} The JavaScript Number value representing a real value.
+     */
+    static intToReal(x) {
+        return x;
+    }
+
+    /**
+     * Converts a JavaScript Number to a CIF integer value literal, in the CIF ASCII representation.
+     *
+     * @param {number} x - The JavaScript Number value.
+     * @return {string} The CIF integer value literal, in the CIF ASCII representation.
+     */
+    static intToStr(x) {
+        return (x == -0.0) ? "0" : x.toString();
+    }
+
+    /**
+     * Returns the natural logarithm of a real number.
+     *
+     * @param {number} x - The real number.
+     * @return {number} `ln(x)`.
+     * @throws {requirementsException} If the real number is non-positive.
+     */
+    static ln(x) {
+        if (x <= 0.0) {
+            throw new requirementsException(requirementsUtils.fmt("Invalid operation: ln(%s).",
+                requirementsUtils.realToStr(x)));
+        }
+        var rslt = Math.log(x);
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns the logarithm (base 10) of a real number.
+     *
+     * @param {number} x - The real number.
+     * @return {number} `log(x)`.
+     * @throws {requirementsException} If the real number is non-positive.
+     */
+    static log(x) {
+        if (x <= 0.0) {
+            throw new requirementsException(requirementsUtils.fmt("Invalid operation: log(%s).",
+                requirementsUtils.realToStr(x)));
+        }
+        var rslt = Math.log10(x);
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns the maximum of two integer numbers.
+     *
+     * @param {number} x - The first integer number.
+     * @param {number} y - The second integer number.
+     * @return {number} `max(x, y)`.
+     */
+    static maxInt(x, y) {
+        var rslt = Math.max(x, y);
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns the maximum of two real numbers.
+     *
+     * @param {number} x - The first real number.
+     * @param {number} y - The second real number.
+     * @return {number} `max(x, y)`.
+     */
+    static maxReal(x, y) {
+        var rslt = Math.max(x, y);
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns the minimum of two integer numbers.
+     *
+     * @param {number} x - The first integer number.
+     * @param {number} y - The second integer number.
+     * @return {number} `min(x, y)`.
+     */
+    static minInt(x, y) {
+        var rslt = Math.min(x, y);
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns the minimum of two real numbers.
+     *
+     * @param {number} x - The first real number.
+     * @param {number} y - The second real number.
+     * @return {number} `min(x, y)`.
+     */
+    static minReal(x, y) {
+        var rslt = Math.min(x, y);
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns the modulus of two integer numbers.
+     *
+     * @param {number} x - The dividend.
+     * @param {number} y - The divisor.
+     * @return {number} `x mod y`.
+     * @throws {requirementsException} If the operation results in division by zero.
+     */
+    static mod(x, y) {
+        if (y == 0) {
+            throw new requirementsException(requirementsUtils.fmt("Division by zero: %d mod %d.", x, y));
+        }
+        var rslt = x % y;
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Creates a shallow copy of the given list, and replaces the element at the given index with a new value.
+     *
+     * @param {array} lst - The list.
+     * @param {number} origIdx - The 0-based index into the list of the element to replace.
+     * Negative indices are allowed, and count from the right.
+     * @param {object} newValue - The new value.
+     * @return {array} The modified list.
+     * @throws {requirementsException} If the index is out of range for the list.
+     */
+    static modify(lst, origIdx, newValue) {
+        // Normalize index and check for out of bounds.
+        var idx = origIdx;
+        if (idx < 0) idx = lst.length + idx;
+        if (idx < 0 || idx >= lst.length) {
+            throw new requirementsException(requirementsUtils.fmt("Index out of bounds: %s[%s].",
+                requirementsUtils.valueToStr(lst), origIdx));
+        }
+
+        // Create a shallow copy, replace the element, and return the list.
+        var rslt = requirementsUtils.copy(lst);
+        rslt[idx] = newValue;
+        return rslt;
+    }
+
+    /**
+     * Returns the multiplication of two integer numbers.
+     *
+     * @param {number} x - The first integer number.
+     * @param {number} y - The second integer number.
+     * @return {number} `x * y`.
+     * @throws {requirementsException} If the operation results in integer overflow.
+     */
+    static multiplyInt(x, y) {
+        var rslt = x * y;
+        if (requirementsUtils.MIN_INT <= rslt && rslt <= requirementsUtils.MAX_INT) {
+            return (rslt == -0.0) ? 0.0 : rslt;
+        }
+
+        throw new requirementsException(requirementsUtils.fmt("Integer overflow: %d * %d.", x, y));
+    }
+
+    /**
+     * Returns the multiplication of two real numbers.
+     *
+     * @param {number} x - The first real number.
+     * @param {number} y - The second real number.
+     * @return {number} `x * y`.
+     * @throws {requirementsException} If the operation results in real overflow.
+     */
+    static multiplyReal(x, y) {
+        var rslt = x * y;
+        if (!Number.isFinite(rslt)) {
+            throw new requirementsException(requirementsUtils.fmt("Real overflow: %s * %s.",
+                requirementsUtils.realToStr(x), requirementsUtils.realToStr(y)));
+        }
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns the negation of an integer number.
+     *
+     * @param {number} x - The integer number.
+     * @return {number} `-value`.
+     * @throws {requirementsException} If the operation results in integer overflow.
+     */
+    static negateInt(x) {
+        if (x == requirementsUtils.MIN_INT) {
+            throw new requirementsException(requirementsUtils.fmt("Integer overflow: -%d.", x));
+        }
+        return (x == 0.0) ? 0.0 : -x;
+    }
+
+    /**
+     * Returns the negation of a real number.
+     *
+     * @param {number} x - The real number.
+     * @return {number} `-value`.
+     */
+    static negateReal(x) {
+        return (x == 0.0) ? 0.0 : -x;
+    }
+
+    /**
+     * Normalizes a print target path. File separators '\\' are replaced by '/'.
+     *
+     * @param {string} path - The print target path. Should not be special target
+     *      ':stdout' or ':stderr'.
+     * @return {string} The normalized print target path.
+     */
+    static normalizePrintTarget(path) {
+        return path.replaceAll('\\', '/');
+    }
+
+    /**
+     * Returns the exponentiation (power) of two integer numbers.
+     *
+     * @param {number} x - The base integer number.
+     * @param {number} y - The exponent integer number, `y >= 0`.
+     * @return {number} `pow(x, y)`.
+     * @throws {requirementsException} If the operation results in integer overflow.
+     */
+    static powInt(x, y) {
+        if (y < 0) throw new Error("y < 0");
+        var rslt = Math.pow(x, y);
+        if (requirementsUtils.MIN_INT <= rslt && rslt <= requirementsUtils.MAX_INT) {
+            return (rslt == -0.0) ? 0.0 : rslt;
+        }
+        throw new requirementsException(requirementsUtils.fmt("Integer overflow: pow(%d, %d).", x, y));
+    }
+
+    /**
+     * Returns the exponentiation (power) of two real numbers.
+     *
+     * @param {number} x - The base real number.
+     * @param {number} y - The exponent real number.
+     * @return {number} `pow(x, y)`.
+     * @throws {requirementsException} If the operation results in real overflow, or `NaN`.
+     */
+    static powReal(x, y) {
+        // Assumes that the arguments are valid numbers (no inf/NaN/-0.0).
+        var rslt = Math.pow(x, y);
+        if (!Number.isFinite(rslt)) {
+            throw new requirementsException(requirementsUtils.fmt("Real overflow: pow(%s, %s).",
+                requirementsUtils.realToStr(x), requirementsUtils.realToStr(y)));
+        }
+        if (Number.isNaN(rslt)) {
+            throw new requirementsException(requirementsUtils.fmt("Invalid operation: pow(%s, %s).",
+                requirementsUtils.realToStr(x), requirementsUtils.realToStr(y)));
+        }
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Converts a JavaScript Number to a CIF real value literal, in the CIF ASCII representation.
+     *
+     * <p>Note that the number values may be negative, and the
+     * resulting textual representation may thus have a `"-"` prefix,
+     * unlike real value literals in the CIF ASCII representation, where the
+     * `"-"` character is a unary operator.</p>
+     *
+     * @param {number} x - The JavaScript Number value.
+     * @return {string} The CIF real value literal, in the CIF ASCII representation.
+     */
+    static realToStr(x) {
+        if (!Number.isFinite(x)) throw new Error(x.toString());
+        // TODO: Format this to CIF syntax: (0|[1-9][0-9]*)(.[0-9]+|(.[0-9]+)?[eE][-+]?[0-9]+)
+        return (x == -0.0) ? "0.0" : x.toString().replace('E', 'e');
+    }
+
+    /**
+     * Projects a list, using a zero-based index.
+     *
+     * @param {array} lst - The list.
+     * @param {number} origIdx - The 0-based index into the list of the element to return.
+     * Negative indices are allowed, and count from the right.
+     * @return {object} `lst[origIdx]`.
+     * @throws {requirementsException} If the index is out of range for the list.
+     */
+    static projectList(lst, origIdx) {
+        // Normalize index and check for out of bounds.
+        var idx = origIdx;
+        if (idx < 0) idx = lst.length + idx;
+        if (idx < 0 || idx >= lst.length) {
+            throw new requirementsException(requirementsUtils.fmt("Index out of bounds: %s[%s].",
+                requirementsUtils.valueToStr(lst), origIdx));
+        }
+
+        // Return the element.
+        return lst[idx];
+    }
+
+    /**
+     * Projects a string, using a zero-based index.
+     *
+     * @param {string} str - The string.
+     * @param {number} origIdx - The 0-based index into the string of the character to return.
+     * Negative indices are allowed, and count from the right.
+     * @return {string} `str[origIdx]`.
+     * @throws {requirementsException} If the index is out of range for the string.
+     */
+    static projectString(str, origIdx) {
+        var idx = origIdx;
+        if (idx < 0) idx = str.length + idx;
+        if (idx < 0 || idx >= str.length) {
+            throw new requirementsException(requirementsUtils.fmt("Index out of bounds: \"%s\"[%s].",
+                requirementsUtils.escape(str), origIdx));
+        }
+
+        return str.toString().substring(idx, idx + 1);
+    }
+
+    /**
+     * Invoked in case of an integer range out of bounds error.
+     *
+     * @param {string} name - The name of the variable that contains the integer value, as end-user readable text.
+     * @param {string} value - The value of the variable that contains the integer value, as end-user readable text.
+     * @param {string} type - The type of the variable that contains the integer value, as end-user readable text.
+     * @throws {requirementsException} Always thrown.
+     */
+    static rangeErrInt(name, value, type) {
+        throw new requirementsException(requirementsUtils.fmt("Variable \"%s\" is assigned value \"%s\", which " +
+            "violates the integer type bounds of the type \"%s\" of that variable.", name, value, type));
+    }
+
+    /**
+     * Returns the round of a real number.
+     *
+     * @param {number} x - The real number.
+     * @return {number} `round(x)`.
+     * @throws {requirementsException} If the operation results in integer overflow.
+     */
+    static round(x) {
+        if (x < requirementsUtils.MIN_INT - 0.5 || x >= requirementsUtils.MAX_INT + 0.5) {
+            throw new requirementsException(requirementsUtils.fmt("Integer overflow: round(%s).",
+                requirementsUtils.realToStr(x)));
+        }
+        var rslt = Math.round(x);
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns a linearly scaled value.
+     *
+     * @param {number} v - The value to scale.
+     * @param {number} inmin - The minimum of the input interval.
+     * @param {number} inmax - The maximum of the input interval.
+     * @param {number} outmin - The minimum of the output interval.
+     * @param {number} outmax - The maximum of the output interval.
+     * @return {number} `scale(v, inmin, inmax, outmin, outmax)`.
+     * @throws {requirementsException} If the input interval is empty, or the operation results in real overflow.
+     */
+    static scale(v, inmin, inmax, outmin, outmax) {
+        // fraction = (v - inmin) / (inmax - inmin);
+        // result = outmin + fraction * (outmax - outmin);
+        var inrange = requirementsUtils.subtractReal(inmax, inmin);
+        if (inrange == 0) {
+            throw new requirementsException(requirementsUtils.fmt("Empty input interval: scale(%s, %s, %s, %s, " +
+                "%s).", requirementsUtils.realToStr(v),
+                requirementsUtils.realToStr(inmin), requirementsUtils.realToStr(inmax),
+                requirementsUtils.realToStr(outmin), requirementsUtils.realToStr(outmax)));
+        }
+        var fraction = requirementsUtils.divide(requirementsUtils.subtractReal(v, inmin), inrange);
+        return requirementsUtils.addReal(outmin, requirementsUtils.multiplyReal(fraction,
+            requirementsUtils.subtractReal(outmax, outmin)));
+    }
+
+    /**
+     * Returns the sign of an integer number.
+     *
+     * @param {number} x - The integer number.
+     * @return {number} `sign(x)`.
+     */
+    static signInt(x) {
+        return (x == 0) ? 0 : (x < 0) ? -1 : 1;
+    }
+
+    /**
+     * Returns the sign of a real number.
+     *
+     * @param {number} x - The real number.
+     * @return {number} `sign(x)`.
+     */
+    static signReal(x) {
+        return (x == 0.0) ? 0 : (x < 0.0) ? -1 : 1;
+    }
+
+    /**
+     * Returns the sine of a real number.
+     *
+     * @param {number} x - The real number.
+     * @return {number} `sin(x)`.
+     * @throws {requirementsException} If the operation results in real overflow, or `NaN`.
+     */
+    static sin(x) {
+        var rslt = Math.sin(x);
+        if (!Number.isFinite(rslt)) {
+            throw new requirementsException(requirementsUtils.fmt("Real overflow: sin(%s).",
+                requirementsUtils.realToStr(x)));
+        }
+        if (Number.isNaN(rslt)) {
+            throw new requirementsException(requirementsUtils.fmt("Invalid operation: sin(%s).",
+                requirementsUtils.realToStr(x)));
+        }
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns `size(x)` for the given string.
+     *
+     * @param {string} x - The string.
+     * @return {number} `size(x)`.
+     */
+    static sizeString(x) {
+        return x.length;
+    }
+
+    /**
+     * Returns `size(x)` for the given list.
+     *
+     * @param {array} x - The list.
+     * @return {number} `size(x)`.
+     */
+    static sizeList(x) {
+        return x.length;
+    }
+
+    /**
+     * Returns the square root of a real number.
+     *
+     * @param {number} x - The real number.
+     * @return {number} `sqrt(x)`.
+     * @throws {requirementsException} If the real number is negative.
+     */
+    static sqrt(x) {
+        // Assumes that the argument is never -0.0.
+        if (x < 0.0) {
+            throw new requirementsException(requirementsUtils.fmt("Invalid operation: sqrt(%s).",
+                requirementsUtils.realToStr(x)));
+        }
+        return Math.sqrt(x);
+    }
+
+    /**
+     * Converts a CIF boolean value literal, in the CIF ASCII representation, to a JavaScript Boolean.
+     *
+     * @param {string} x - The CIF boolean value literal, in the CIF ASCII representation.
+     * @return {boolean} The JavaScript Boolean value.
+     * @throws {requirementsException} If the string value does not represent a boolean value.
+     */
+    static strToBool(x) {
+        if (x == "true") return true;
+        if (x == "false") return false;
+
+        throw new requirementsException(requirementsUtils.fmt("Cast from type \"string\" to type \"bool\" " +
+            "failed: the string value does not represent a boolean value: \"%s\".",
+            requirementsUtils.escape(x)));
+    }
+
+    /**
+     * Converts a CIF integer value literal, in the CIF ASCII representation, to a JavaScript Number.
+     *
+     * <p>See also the `CifTypeChecker.transIntExpression` method.</p>
+     *
+     * @param {string} x - The CIF integer value literal, in the CIF ASCII representation.
+     * @return {number} The JavaScript Number value.
+     * @throws {requirementsException} If the string value does not represent an integer value.
+     */
+    static strToInt(x) {
+        var rslt = Number.parseInt(x, 10);
+        if (Number.isNaN(rslt) || rslt < requirementsUtils.MIN_INT || rslt > requirementsUtils.MAX_INT
+            || x.trim().length != x.length)
+        {
+            throw new requirementsException(requirementsUtils.fmt("Cast from type \"string\" to type \"int\" " +
+                "failed: the string value does not represent an integer value, or the integer value " +
+                "resulted in integer overflow: \"%s\".", requirementsUtils.escape(x)));
+        }
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Converts a CIF real value literal, in the CIF ASCII representation, to a JavaScript Number.
+     *
+     * <p>See also the `CifTypeChecker.transRealExpression` method.</p>
+     *
+     * @param {string} x - The CIF real value literal, in the CIF ASCII representation.
+     * @return {number} The JavaScript Number value.
+     * @throws {requirementsException} If the string value does not represent a real value.
+     */
+    static strToReal(x) {
+        var rslt = Number.parseFloat(x, 10);
+        if (Number.isNaN(rslt) || x.trim().length != x.length) {
+            throw new requirementsException(requirementsUtils.fmt("Cast from type \"string\" to type \"real\" " +
+                "failed: the string value does not represent a real value: \"%s\".",
+                requirementsUtils.escape(x)));
+        }
+
+        if (!Number.isFinite(rslt)) {
+            throw new requirementsException(requirementsUtils.fmt("Cast from type \"string\" to type \"real\" " +
+                "failed, due to real overflow: \"%s\".", requirementsUtils.escape(x)));
+        }
+
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns the subtraction of two integer numbers.
+     *
+     * @param {number} x - The first integer number.
+     * @param {number} y - The second integer number.
+     * @return {number} `x - y`.
+     * @throws {requirementsException} If the operation results in integer overflow.
+     */
+    static subtractInt(x, y) {
+        var rslt = x - y;
+        if (requirementsUtils.MIN_INT <= rslt && rslt <= requirementsUtils.MAX_INT) {
+            return (rslt == -0.0) ? 0.0 : rslt;
+        }
+
+        throw new requirementsException(requirementsUtils.fmt("Integer overflow: %d - %d.", x, y));
+    }
+
+    /**
+     * Returns the subtraction of two real numbers.
+     *
+     * @param {number} x - The first real number.
+     * @param {number} y - The second real number.
+     * @return {number} `x - y`.
+     * @throws {requirementsException} If the operation results in real overflow.
+     */
+    static subtractReal(x, y) {
+        var rslt = x - y;
+        if (!Number.isFinite(rslt)) {
+            throw new requirementsException(requirementsUtils.fmt("Real overflow: %s - %s.",
+                requirementsUtils.realToStr(x), requirementsUtils.realToStr(y)));
+        }
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Returns the tangent of a real number.
+     *
+     * @param {number} x - The real number.
+     * @return {number} `tan(x)`.
+     * @throws {requirementsException} If the operation results in real overflow, or `NaN`.
+     */
+    static tan(x) {
+        var rslt = Math.tan(x);
+        if (!Number.isFinite(rslt)) {
+            throw new requirementsException(requirementsUtils.fmt("Real overflow: tan(%s).",
+                requirementsUtils.realToStr(x)));
+        }
+        if (Number.isNaN(rslt)) {
+            throw new requirementsException(requirementsUtils.fmt("Invalid operation: tan(%s).",
+                requirementsUtils.realToStr(x)));
+        }
+        return (rslt == -0.0) ? 0.0 : rslt;
+    }
+
+    /**
+     * Converts the given value into a textual representation, closely resembling the CIF ASCII syntax.
+     *
+     * @param {object} value - The value.
+     * @return {string} The textual representation.
+     */
+    static valueToStr(value) {
+        if (typeof(value) == "boolean") {
+            return value ? "true" : "false";
+        } else if (typeof(value) == "number") {
+            return (value.toString()).replace('E', 'e');
+        } else if (typeof(value) == "string") {
+            return "\"" + requirementsUtils.escape(value) + "\"";
+        } else if (Array.isArray(value)) {
+            var txt = "[";
+            for (var i = 0; i < value.length; i++) {
+                if (i > 0) txt += ", ";
+                txt += requirementsUtils.valueToStr(value[i]);
+            }
+            txt += "]";
+            return txt;
+        } else if (typeof(value) == "object") {
+            return value.toString();
+        } else if (typeof(value) == "symbol") {
+            return value.description;
+        } else {
+            throw new Error("Unsupported value: " + value);
+        }
+    }
+}
+        </script>
+        <script type="text/javascript">
+/** Tuples. */
+
+
+/** requirements code generated from a CIF specification. */
+class requirements_class {
+    /** requirementsEnum declaration. It contains the single merged enum from the CIF model. */
+    requirementsEnum = Object.freeze({
+        /** Literal "__some_dummy_enum_literal". */
+        ___some_dummy_enum_literal: Symbol("__some_dummy_enum_literal")
+    })
+
+    /** Should execution timing information be provided? */
+    doInfoExec = true;
+
+    /** Should executed event information be provided? */
+    doInfoEvent = true;
+
+    /** Should print output be provided? */
+    doInfoPrintOutput = true;
+
+    /** Should state output be provided? */
+    doStateOutput = false;
+
+    /** Should transition output be provided? */
+    doTransitionOutput = true;
+
+    /** Whether the constants have been initialized already. */
+    constantsInitialized = false;
+
+    /** Whether the SVG copy and move declarations have been applied already. */
+    svgCopiesAndMovesApplied = false;
+
+    /** Whether this is the first time the code is (to be) executed. */
+    firstExec;
+
+    /** The names of all the events. */
+    EVENT_NAMES = [
+        "ChargeBatteryB",
+        "ChargeBatteryY",
+        "RoverBMoveDown",
+        "RoverBMoveLeft",
+        "RoverBMoveRight",
+        "RoverBMoveUp",
+        "RoverYMoveDown",
+        "RoverYMoveLeft",
+        "RoverYMoveRight",
+        "RoverYMoveUp"
+    ];
+
+    /** Constant "ChargeStation1.positionX". */
+    ChargeStation1_positionX_;
+
+    /** Constant "ChargeStation1.positionY". */
+    ChargeStation1_positionY_;
+
+    /** Constant "ChargeStation2.positionX". */
+    ChargeStation2_positionX_;
+
+    /** Constant "ChargeStation2.positionY". */
+    ChargeStation2_positionY_;
+
+    /** Variable 'time', tracks elapsed time for a session. */
+    time;
+
+    /**
+     * The frequency in times per second, that the code should
+     * be executed (if positive), or execute as fast as possible, that is
+     * as many times per second as possible (if negative or zero).
+     */
+    frequency = 60;
+
+    /**
+     * Whether the next execution is the first execution of the session.
+     * Used to initialize time-related variables for starting, pausing,
+     * resuming or resetting each session.
+     */
+    first;
+
+    /**
+     * Whether the simulation is currently running, and should process
+     * user input, or is paused.
+     */
+    playing;
+
+    /** The start time of the current session. */
+    startMilli;
+
+    /**
+     * The targeted end time of the current/next cycle, to ensure
+     * that the duration of the cycle matches with the configured
+     * frequency.
+     */
+    targetMilli;
+
+
+    /** Discrete variable "RoverBlue.positionX". */
+    RoverBlue_positionX_;
+
+    /** Discrete variable "RoverBlue.positionY". */
+    RoverBlue_positionY_;
+
+    /** Discrete variable "RoverBlue.battery". */
+    RoverBlue_battery_;
+
+    /** Discrete variable "RoverYellow.positionX". */
+    RoverYellow_positionX_;
+
+    /** Discrete variable "RoverYellow.positionY". */
+    RoverYellow_positionY_;
+
+    /** Discrete variable "RoverYellow.battery". */
+    RoverYellow_battery_;
+
+
+    /** SVG output elements. */
+    outElem0;
+    outElem1;
+    outElem2;
+    outElem3;
+    outElem4;
+    outElem5;
+    outElem6;
+    outElem7;
+    outElem8;
+    outElem9;
+    outElem10;
+    outElem11;
+    outElem12;
+    outElem13;
+    outElem14;
+    outElem15;
+    outElem16;
+    outElem17;
+    outElem18;
+    outElem19;
+    outElem20;
+    outElem21;
+
+    /**
+     * SVG input queue with functions for handling clicked SVG
+     * input elements, from first clicked at the head of the array
+     * to last clicked at the tail of the array.
+     */
+    svgInQueue;
+
+    /**
+     * The SVG input id corresponding to the SVG input element that
+     * was clicked. Is 'null' if no SVG input element was clicked so
+     * far, or all clicks have already been processed.
+     */
+    svgInId;
+
+    /**
+     * The 0-based index of the event corresponding to the SVG input
+     * element that was clicked. Is '-1' if no SVG input element was
+     * clicked so far, or all clicks have already been processed.
+     */
+    svgInEvent;
+
+    /** SVG input click event handlers. */
+
+
+    /** SVG input event setters. */
+
+
+    /** Starts the simulation. */
+    start() {
+        if (!this.playing) {
+            this.playing = true;
+            this.exec();
+        }
+    }
+
+    /** Stops the simulation. */
+    stop() {
+        if (this.playing) {
+            this.playing = false;
+        }
+    }
+
+    /** Resets the object to its initial state. */
+    reset() {
+        this.stop();
+        this.firstExec = true;
+        this.time = 0.0;
+        this.first = true;
+        this.timePaused = null;
+        this.initState();
+        this.initUI();
+        this.updateUI();
+    }
+
+    /**
+     * Execute the code once. Inputs are read, transitions are executed until
+     * none are possible, outputs are written, etc.
+     *
+     * @param newTime The time in seconds, since the start of the first
+     *      execution.
+     * @throws {requirementsException} In case of a runtime error caused by code
+     *      generated from the CIF model.
+     */
+    execOnce(newTime) {
+        // Pre execution notification.
+        this.preExec();
+
+        // Update values of input variables.
+        this.updateInputs();
+
+        // Initialize the state.
+        if (this.firstExec) {
+            this.initState();
+        }
+
+        // Calculate time delta.
+        var delta = newTime - this.time;
+
+        // Update values of continuous variables.
+        if (!this.firstExec) {
+                        // No continuous variables, except variable 'time'.
+        }
+
+        // Update time.
+        this.time = newTime;
+
+        // Apply print declarations.
+        if (this.firstExec) {
+            // For 'initial' transition.
+            if (this.doInfoPrintOutput) this.printOutput(-3, true);
+            if (this.doInfoPrintOutput) this.printOutput(-3, false);
+            if (this.doStateOutput) requirements.log('Initial state: ' + requirements.getStateText());
+            if (this.doStateOutput || this.doTransitionOutput) this.log('');
+
+        } else {
+            // For 'post' of time transition.
+            if (this.doInfoPrintOutput) this.printOutput(-2, false);
+        }
+
+        // Execute environment events and SVG input events as long as they are possible, emptying the SVG input queue.
+        while (true) {
+            // Handle next element from SVG input queue, if not already already processing one.
+            if (this.svgInEvent == -1 && this.svgInQueue.length > 0) {
+                var func = this.svgInQueue.shift(); // Remove head of the queue.
+                func(); // Call function, to set the event to allow.
+            }
+
+            // Try to execute an SVG input mapping with updates for each environment event, and an edge for each SVG
+            // input event.
+            var anythingExecuted = false;
+
+
+
+            // Stop if no SVG input mapping and no edge was executed, and no more SVG input clicks are to be processed.
+            if (!anythingExecuted && this.svgInQueue.length == 0) {
+                break;
+            }
+        }
+
+        // Make sure all outstanding SVG input clicks have been processed.
+        console.assert(this.svgInEvent == -1 && this.svgInQueue.length == 0);
+
+        // Execute uncontrollable edges as long as they are possible.
+        while (true) {
+            // Try to execute an edge for each event.
+            var edgeExecuted = false;
+
+
+            // Stop if no edge was executed.
+            if (!edgeExecuted) {
+                break;
+            }
+        }
+
+        // Execute controllable edges as long as they are possible.
+        while (true) {
+            // Try to execute an edge for each event.
+            var edgeExecuted = false;
+
+            // Event "ChargeBatteryB".
+            anythingExecuted |= this.execEdge0();
+
+            // Event "ChargeBatteryY".
+            anythingExecuted |= this.execEdge1();
+
+            // Event "RoverBMoveDown".
+            anythingExecuted |= this.execEdge2();
+
+            // Event "RoverBMoveLeft".
+            anythingExecuted |= this.execEdge3();
+
+            // Event "RoverBMoveRight".
+            anythingExecuted |= this.execEdge4();
+
+            // Event "RoverBMoveUp".
+            anythingExecuted |= this.execEdge5();
+
+            // Event "RoverYMoveDown".
+            anythingExecuted |= this.execEdge6();
+
+            // Event "RoverYMoveLeft".
+            anythingExecuted |= this.execEdge7();
+
+            // Event "RoverYMoveRight".
+            anythingExecuted |= this.execEdge8();
+
+            // Event "RoverYMoveUp".
+            anythingExecuted |= this.execEdge9();
+
+            // Stop if no edge was executed.
+            if (!edgeExecuted) {
+                break;
+            }
+        }
+
+        // Apply print declarations for 'pre' of time transition.
+        if (this.doInfoPrintOutput) this.printOutput(-2, true);
+
+        // Post execution notification.
+        this.postExec();
+
+        // Done.
+        this.firstExec = false;
+    }
+
+    /**
+     * Calls {@link #execWhile}, which repeatedly {@link #execOnce executes the code}.
+     *
+     * @throws {requirementsException} In case of a runtime error caused by code
+     *      generated from the CIF model.
+     */
+    exec() {
+        this.execWhile(1);
+    }
+
+    /**
+     * Repeatedly {@link #execOnce executes the code}.
+     *
+     * @param delay The delay before executing, in milliseconds.
+     *
+     * @throws {requirementsException} In case of a runtime error caused by code
+     *      generated from the CIF model.
+     */
+    execWhile(delay) {
+        setTimeout(
+            function () {
+                // Pre execution timing.
+                var now = Date.now();
+                var preMilli = now;
+
+                // On first execution, initialize variables for timing.
+                if (requirements.first) {
+                    requirements.first = false;
+                    requirements.startMilli = now;
+                    requirements.targetMilli = requirements.startMilli;
+                    preMilli = requirements.startMilli;
+                }
+
+                // Handle pausing/playing.
+                if (!requirements.playing) {
+                    requirements.timePaused = now;
+                    return;
+                }
+
+                if (requirements.timePaused) {
+                    requirements.startMilli += (now - requirements.timePaused);
+                    requirements.targetMilli += (now - requirements.timePaused);
+                    requirements.timePaused = null;
+                }
+
+                // Get cycle time and current 'time'.
+                var frequency = requirements.frequency;
+                var cycleMilli = (frequency <= 0) ? -1 : 1e3 / frequency;
+                var timeMilli = preMilli - requirements.startMilli;
+
+                // Execute once.
+                requirements.execOnce(timeMilli / 1e3);
+
+                // Post execution timing.
+                var postMilli = Date.now();
+                var duration = postMilli - preMilli;
+                if (requirements.doInfoExec) {
+                    requirements.infoExec(duration, cycleMilli);
+                }
+
+                // Ensure frequency.
+                var remainderMilli = 0;
+                if (frequency > 0) {
+                    requirements.targetMilli += cycleMilli;
+                    remainderMilli = requirements.targetMilli - postMilli;
+                }
+
+                // Execute again.
+                requirements.execWhile(remainderMilli > 0 ? remainderMilli : 0);
+            },
+        delay);
+    }
+
+    /**
+     * Execute code for edge with index 0 and event "ChargeBatteryB".
+     *
+     * @return 'true' if the edge was executed, 'false' otherwise.
+     * @throws {requirementsException} In case of a runtime error caused by code
+    *       generated from the CIF model.
+     */
+    execEdge0() {
+        try {
+            var guard;
+            try {
+                guard = ((requirements.RoverBlue_battery_) < (8)) && (((requirementsUtils.equalObjs(requirements.ChargeStation1_positionX_, requirements.RoverBlue_positionX_)) && (requirementsUtils.equalObjs(requirements.ChargeStation1_positionY_, requirements.RoverBlue_positionY_))) || ((requirementsUtils.equalObjs(requirements.ChargeStation2_positionX_, requirements.RoverBlue_positionX_)) && (requirementsUtils.equalObjs(requirements.ChargeStation2_positionY_, requirements.RoverBlue_positionY_))));
+            } catch (e) {
+                if (e instanceof requirementsException) {
+                    e = new requirementsException("Failed to evaluate guard.", e);
+                }
+                throw e;
+            }
+
+            if (!guard) {
+                return false;
+            }
+
+            if (this.doInfoPrintOutput) this.printOutput(0, true);
+            if (this.doInfoEvent) this.infoEvent(0, true);
+
+            try {
+                requirements.RoverBlue_battery_ = 8;
+            } catch (e) {
+                if (e instanceof requirementsException) {
+                    e = new requirementsException("Failed to execute update(s).", e);
+                }
+                throw e;
+            }
+
+            if (this.doInfoEvent) this.infoEvent(0, false);
+            if (this.doInfoPrintOutput) this.printOutput(0, false);
+            if (this.doStateOutput || this.doTransitionOutput) this.log('');
+            return true;
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to (try to) execute event \"ChargeBatteryB\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * Execute code for edge with index 1 and event "ChargeBatteryY".
+     *
+     * @return 'true' if the edge was executed, 'false' otherwise.
+     * @throws {requirementsException} In case of a runtime error caused by code
+    *       generated from the CIF model.
+     */
+    execEdge1() {
+        try {
+            var guard;
+            try {
+                guard = ((requirements.RoverYellow_battery_) < (8)) && (((requirementsUtils.equalObjs(requirements.ChargeStation1_positionX_, requirements.RoverYellow_positionX_)) && (requirementsUtils.equalObjs(requirements.ChargeStation1_positionY_, requirements.RoverYellow_positionY_))) || ((requirementsUtils.equalObjs(requirements.ChargeStation2_positionX_, requirements.RoverYellow_positionX_)) && (requirementsUtils.equalObjs(requirements.ChargeStation2_positionY_, requirements.RoverYellow_positionY_))));
+            } catch (e) {
+                if (e instanceof requirementsException) {
+                    e = new requirementsException("Failed to evaluate guard.", e);
+                }
+                throw e;
+            }
+
+            if (!guard) {
+                return false;
+            }
+
+            if (this.doInfoPrintOutput) this.printOutput(1, true);
+            if (this.doInfoEvent) this.infoEvent(1, true);
+
+            try {
+                requirements.RoverYellow_battery_ = 8;
+            } catch (e) {
+                if (e instanceof requirementsException) {
+                    e = new requirementsException("Failed to execute update(s).", e);
+                }
+                throw e;
+            }
+
+            if (this.doInfoEvent) this.infoEvent(1, false);
+            if (this.doInfoPrintOutput) this.printOutput(1, false);
+            if (this.doStateOutput || this.doTransitionOutput) this.log('');
+            return true;
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to (try to) execute event \"ChargeBatteryY\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * Execute code for edge with index 2 and event "RoverBMoveDown".
+     *
+     * @return 'true' if the edge was executed, 'false' otherwise.
+     * @throws {requirementsException} In case of a runtime error caused by code
+    *       generated from the CIF model.
+     */
+    execEdge2() {
+        try {
+            var guard;
+            try {
+                guard = ((requirements.RoverBlue_positionY_) > (1)) && ((requirements.RoverBlue_battery_) > (0));
+            } catch (e) {
+                if (e instanceof requirementsException) {
+                    e = new requirementsException("Failed to evaluate guard.", e);
+                }
+                throw e;
+            }
+
+            if (!guard) {
+                return false;
+            }
+
+            if (this.doInfoPrintOutput) this.printOutput(2, true);
+            if (this.doInfoEvent) this.infoEvent(2, true);
+
+            try {
+                {
+                    var rhs1 = (requirements.RoverBlue_positionY_) - (1);
+                    if ((rhs1) < 1) {
+                        requirementsUtils.rangeErrInt("RoverBlue.positionY", requirementsUtils.valueToStr(rhs1), "int[1..4]");
+                    }
+                    requirements.RoverBlue_positionY_ = rhs1;
+                }
+                {
+                    var rhs1 = (requirements.RoverBlue_battery_) - (1);
+                    if ((rhs1) < 0) {
+                        requirementsUtils.rangeErrInt("RoverBlue.battery", requirementsUtils.valueToStr(rhs1), "int[0..8]");
+                    }
+                    requirements.RoverBlue_battery_ = rhs1;
+                }
+            } catch (e) {
+                if (e instanceof requirementsException) {
+                    e = new requirementsException("Failed to execute update(s).", e);
+                }
+                throw e;
+            }
+
+            if (this.doInfoEvent) this.infoEvent(2, false);
+            if (this.doInfoPrintOutput) this.printOutput(2, false);
+            if (this.doStateOutput || this.doTransitionOutput) this.log('');
+            return true;
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to (try to) execute event \"RoverBMoveDown\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * Execute code for edge with index 3 and event "RoverBMoveLeft".
+     *
+     * @return 'true' if the edge was executed, 'false' otherwise.
+     * @throws {requirementsException} In case of a runtime error caused by code
+    *       generated from the CIF model.
+     */
+    execEdge3() {
+        try {
+            var guard;
+            try {
+                guard = ((requirements.RoverBlue_positionX_) > (1)) && ((requirements.RoverBlue_battery_) > (0));
+            } catch (e) {
+                if (e instanceof requirementsException) {
+                    e = new requirementsException("Failed to evaluate guard.", e);
+                }
+                throw e;
+            }
+
+            if (!guard) {
+                return false;
+            }
+
+            if (this.doInfoPrintOutput) this.printOutput(3, true);
+            if (this.doInfoEvent) this.infoEvent(3, true);
+
+            try {
+                {
+                    var rhs1 = (requirements.RoverBlue_positionX_) - (1);
+                    if ((rhs1) < 1) {
+                        requirementsUtils.rangeErrInt("RoverBlue.positionX", requirementsUtils.valueToStr(rhs1), "int[1..6]");
+                    }
+                    requirements.RoverBlue_positionX_ = rhs1;
+                }
+                {
+                    var rhs1 = (requirements.RoverBlue_battery_) - (1);
+                    if ((rhs1) < 0) {
+                        requirementsUtils.rangeErrInt("RoverBlue.battery", requirementsUtils.valueToStr(rhs1), "int[0..8]");
+                    }
+                    requirements.RoverBlue_battery_ = rhs1;
+                }
+            } catch (e) {
+                if (e instanceof requirementsException) {
+                    e = new requirementsException("Failed to execute update(s).", e);
+                }
+                throw e;
+            }
+
+            if (this.doInfoEvent) this.infoEvent(3, false);
+            if (this.doInfoPrintOutput) this.printOutput(3, false);
+            if (this.doStateOutput || this.doTransitionOutput) this.log('');
+            return true;
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to (try to) execute event \"RoverBMoveLeft\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * Execute code for edge with index 4 and event "RoverBMoveRight".
+     *
+     * @return 'true' if the edge was executed, 'false' otherwise.
+     * @throws {requirementsException} In case of a runtime error caused by code
+    *       generated from the CIF model.
+     */
+    execEdge4() {
+        try {
+            var guard;
+            try {
+                guard = ((requirements.RoverBlue_positionX_) < (6)) && ((requirements.RoverBlue_battery_) > (0));
+            } catch (e) {
+                if (e instanceof requirementsException) {
+                    e = new requirementsException("Failed to evaluate guard.", e);
+                }
+                throw e;
+            }
+
+            if (!guard) {
+                return false;
+            }
+
+            if (this.doInfoPrintOutput) this.printOutput(4, true);
+            if (this.doInfoEvent) this.infoEvent(4, true);
+
+            try {
+                {
+                    var rhs1 = (requirements.RoverBlue_positionX_) + (1);
+                    if ((rhs1) > 6) {
+                        requirementsUtils.rangeErrInt("RoverBlue.positionX", requirementsUtils.valueToStr(rhs1), "int[1..6]");
+                    }
+                    requirements.RoverBlue_positionX_ = rhs1;
+                }
+                {
+                    var rhs1 = (requirements.RoverBlue_battery_) - (1);
+                    if ((rhs1) < 0) {
+                        requirementsUtils.rangeErrInt("RoverBlue.battery", requirementsUtils.valueToStr(rhs1), "int[0..8]");
+                    }
+                    requirements.RoverBlue_battery_ = rhs1;
+                }
+            } catch (e) {
+                if (e instanceof requirementsException) {
+                    e = new requirementsException("Failed to execute update(s).", e);
+                }
+                throw e;
+            }
+
+            if (this.doInfoEvent) this.infoEvent(4, false);
+            if (this.doInfoPrintOutput) this.printOutput(4, false);
+            if (this.doStateOutput || this.doTransitionOutput) this.log('');
+            return true;
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to (try to) execute event \"RoverBMoveRight\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * Execute code for edge with index 5 and event "RoverBMoveUp".
+     *
+     * @return 'true' if the edge was executed, 'false' otherwise.
+     * @throws {requirementsException} In case of a runtime error caused by code
+    *       generated from the CIF model.
+     */
+    execEdge5() {
+        try {
+            var guard;
+            try {
+                guard = ((requirements.RoverBlue_positionY_) < (4)) && ((requirements.RoverBlue_battery_) > (0));
+            } catch (e) {
+                if (e instanceof requirementsException) {
+                    e = new requirementsException("Failed to evaluate guard.", e);
+                }
+                throw e;
+            }
+
+            if (!guard) {
+                return false;
+            }
+
+            if (this.doInfoPrintOutput) this.printOutput(5, true);
+            if (this.doInfoEvent) this.infoEvent(5, true);
+
+            try {
+                {
+                    var rhs1 = (requirements.RoverBlue_positionY_) + (1);
+                    if ((rhs1) > 4) {
+                        requirementsUtils.rangeErrInt("RoverBlue.positionY", requirementsUtils.valueToStr(rhs1), "int[1..4]");
+                    }
+                    requirements.RoverBlue_positionY_ = rhs1;
+                }
+                {
+                    var rhs1 = (requirements.RoverBlue_battery_) - (1);
+                    if ((rhs1) < 0) {
+                        requirementsUtils.rangeErrInt("RoverBlue.battery", requirementsUtils.valueToStr(rhs1), "int[0..8]");
+                    }
+                    requirements.RoverBlue_battery_ = rhs1;
+                }
+            } catch (e) {
+                if (e instanceof requirementsException) {
+                    e = new requirementsException("Failed to execute update(s).", e);
+                }
+                throw e;
+            }
+
+            if (this.doInfoEvent) this.infoEvent(5, false);
+            if (this.doInfoPrintOutput) this.printOutput(5, false);
+            if (this.doStateOutput || this.doTransitionOutput) this.log('');
+            return true;
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to (try to) execute event \"RoverBMoveUp\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * Execute code for edge with index 6 and event "RoverYMoveDown".
+     *
+     * @return 'true' if the edge was executed, 'false' otherwise.
+     * @throws {requirementsException} In case of a runtime error caused by code
+    *       generated from the CIF model.
+     */
+    execEdge6() {
+        try {
+            var guard;
+            try {
+                guard = ((requirements.RoverYellow_positionY_) > (1)) && ((requirements.RoverYellow_battery_) > (0));
+            } catch (e) {
+                if (e instanceof requirementsException) {
+                    e = new requirementsException("Failed to evaluate guard.", e);
+                }
+                throw e;
+            }
+
+            if (!guard) {
+                return false;
+            }
+
+            if (this.doInfoPrintOutput) this.printOutput(6, true);
+            if (this.doInfoEvent) this.infoEvent(6, true);
+
+            try {
+                {
+                    var rhs1 = (requirements.RoverYellow_positionY_) - (1);
+                    if ((rhs1) < 1) {
+                        requirementsUtils.rangeErrInt("RoverYellow.positionY", requirementsUtils.valueToStr(rhs1), "int[1..4]");
+                    }
+                    requirements.RoverYellow_positionY_ = rhs1;
+                }
+                {
+                    var rhs1 = (requirements.RoverYellow_battery_) - (1);
+                    if ((rhs1) < 0) {
+                        requirementsUtils.rangeErrInt("RoverYellow.battery", requirementsUtils.valueToStr(rhs1), "int[0..8]");
+                    }
+                    requirements.RoverYellow_battery_ = rhs1;
+                }
+            } catch (e) {
+                if (e instanceof requirementsException) {
+                    e = new requirementsException("Failed to execute update(s).", e);
+                }
+                throw e;
+            }
+
+            if (this.doInfoEvent) this.infoEvent(6, false);
+            if (this.doInfoPrintOutput) this.printOutput(6, false);
+            if (this.doStateOutput || this.doTransitionOutput) this.log('');
+            return true;
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to (try to) execute event \"RoverYMoveDown\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * Execute code for edge with index 7 and event "RoverYMoveLeft".
+     *
+     * @return 'true' if the edge was executed, 'false' otherwise.
+     * @throws {requirementsException} In case of a runtime error caused by code
+    *       generated from the CIF model.
+     */
+    execEdge7() {
+        try {
+            var guard;
+            try {
+                guard = ((requirements.RoverYellow_positionX_) > (1)) && ((requirements.RoverYellow_battery_) > (0));
+            } catch (e) {
+                if (e instanceof requirementsException) {
+                    e = new requirementsException("Failed to evaluate guard.", e);
+                }
+                throw e;
+            }
+
+            if (!guard) {
+                return false;
+            }
+
+            if (this.doInfoPrintOutput) this.printOutput(7, true);
+            if (this.doInfoEvent) this.infoEvent(7, true);
+
+            try {
+                {
+                    var rhs1 = (requirements.RoverYellow_positionX_) - (1);
+                    if ((rhs1) < 1) {
+                        requirementsUtils.rangeErrInt("RoverYellow.positionX", requirementsUtils.valueToStr(rhs1), "int[1..6]");
+                    }
+                    requirements.RoverYellow_positionX_ = rhs1;
+                }
+                {
+                    var rhs1 = (requirements.RoverYellow_battery_) - (1);
+                    if ((rhs1) < 0) {
+                        requirementsUtils.rangeErrInt("RoverYellow.battery", requirementsUtils.valueToStr(rhs1), "int[0..8]");
+                    }
+                    requirements.RoverYellow_battery_ = rhs1;
+                }
+            } catch (e) {
+                if (e instanceof requirementsException) {
+                    e = new requirementsException("Failed to execute update(s).", e);
+                }
+                throw e;
+            }
+
+            if (this.doInfoEvent) this.infoEvent(7, false);
+            if (this.doInfoPrintOutput) this.printOutput(7, false);
+            if (this.doStateOutput || this.doTransitionOutput) this.log('');
+            return true;
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to (try to) execute event \"RoverYMoveLeft\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * Execute code for edge with index 8 and event "RoverYMoveRight".
+     *
+     * @return 'true' if the edge was executed, 'false' otherwise.
+     * @throws {requirementsException} In case of a runtime error caused by code
+    *       generated from the CIF model.
+     */
+    execEdge8() {
+        try {
+            var guard;
+            try {
+                guard = ((requirements.RoverYellow_positionX_) < (6)) && ((requirements.RoverYellow_battery_) > (0));
+            } catch (e) {
+                if (e instanceof requirementsException) {
+                    e = new requirementsException("Failed to evaluate guard.", e);
+                }
+                throw e;
+            }
+
+            if (!guard) {
+                return false;
+            }
+
+            if (this.doInfoPrintOutput) this.printOutput(8, true);
+            if (this.doInfoEvent) this.infoEvent(8, true);
+
+            try {
+                {
+                    var rhs1 = (requirements.RoverYellow_positionX_) + (1);
+                    if ((rhs1) > 6) {
+                        requirementsUtils.rangeErrInt("RoverYellow.positionX", requirementsUtils.valueToStr(rhs1), "int[1..6]");
+                    }
+                    requirements.RoverYellow_positionX_ = rhs1;
+                }
+                {
+                    var rhs1 = (requirements.RoverYellow_battery_) - (1);
+                    if ((rhs1) < 0) {
+                        requirementsUtils.rangeErrInt("RoverYellow.battery", requirementsUtils.valueToStr(rhs1), "int[0..8]");
+                    }
+                    requirements.RoverYellow_battery_ = rhs1;
+                }
+            } catch (e) {
+                if (e instanceof requirementsException) {
+                    e = new requirementsException("Failed to execute update(s).", e);
+                }
+                throw e;
+            }
+
+            if (this.doInfoEvent) this.infoEvent(8, false);
+            if (this.doInfoPrintOutput) this.printOutput(8, false);
+            if (this.doStateOutput || this.doTransitionOutput) this.log('');
+            return true;
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to (try to) execute event \"RoverYMoveRight\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * Execute code for edge with index 9 and event "RoverYMoveUp".
+     *
+     * @return 'true' if the edge was executed, 'false' otherwise.
+     * @throws {requirementsException} In case of a runtime error caused by code
+    *       generated from the CIF model.
+     */
+    execEdge9() {
+        try {
+            var guard;
+            try {
+                guard = ((requirements.RoverYellow_positionY_) < (4)) && ((requirements.RoverYellow_battery_) > (0));
+            } catch (e) {
+                if (e instanceof requirementsException) {
+                    e = new requirementsException("Failed to evaluate guard.", e);
+                }
+                throw e;
+            }
+
+            if (!guard) {
+                return false;
+            }
+
+            if (this.doInfoPrintOutput) this.printOutput(9, true);
+            if (this.doInfoEvent) this.infoEvent(9, true);
+
+            try {
+                {
+                    var rhs1 = (requirements.RoverYellow_positionY_) + (1);
+                    if ((rhs1) > 4) {
+                        requirementsUtils.rangeErrInt("RoverYellow.positionY", requirementsUtils.valueToStr(rhs1), "int[1..4]");
+                    }
+                    requirements.RoverYellow_positionY_ = rhs1;
+                }
+                {
+                    var rhs1 = (requirements.RoverYellow_battery_) - (1);
+                    if ((rhs1) < 0) {
+                        requirementsUtils.rangeErrInt("RoverYellow.battery", requirementsUtils.valueToStr(rhs1), "int[0..8]");
+                    }
+                    requirements.RoverYellow_battery_ = rhs1;
+                }
+            } catch (e) {
+                if (e instanceof requirementsException) {
+                    e = new requirementsException("Failed to execute update(s).", e);
+                }
+                throw e;
+            }
+
+            if (this.doInfoEvent) this.infoEvent(9, false);
+            if (this.doInfoPrintOutput) this.printOutput(9, false);
+            if (this.doStateOutput || this.doTransitionOutput) this.log('');
+            return true;
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to (try to) execute event \"RoverYMoveUp\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * Initializes the state.
+     *
+     * @throws {requirementsException} In case of a runtime error caused by code
+     *      generated from the CIF model.
+     */
+    initState() {
+        // Initialize constants, if not yet done so.
+        if (!this.constantsInitialized) {
+            this.constantsInitialized = true;
+            requirements.ChargeStation1_positionX_ = 3;
+            requirements.ChargeStation1_positionY_ = 4;
+            requirements.ChargeStation2_positionX_ = 4;
+            requirements.ChargeStation2_positionY_ = 1;
+        }
+
+        // Initialize SVG input.
+        this.svgInQueue = [];
+        this.svgInId = null;
+        this.svgInEvent = -1;
+
+        // CIF model input variables.
+        // No input variables.
+
+        // CIF model state variables.
+        try {
+            requirements.RoverBlue_positionX_ = 4;
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the initial value of variable \"RoverBlue.positionX\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        try {
+            requirements.RoverBlue_positionY_ = 1;
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the initial value of variable \"RoverBlue.positionY\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        try {
+            requirements.RoverBlue_battery_ = 2;
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the initial value of variable \"RoverBlue.battery\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        try {
+            requirements.RoverYellow_positionX_ = 3;
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the initial value of variable \"RoverYellow.positionX\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        try {
+            requirements.RoverYellow_positionY_ = 4;
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the initial value of variable \"RoverYellow.positionY\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        try {
+            requirements.RoverYellow_battery_ = 4;
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the initial value of variable \"RoverYellow.battery\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * Initializes the user interface, either when loading the page
+     * or when resetting the simulation.
+     */
+    initUI() {
+        // Update frequency UI.
+        var range = document.getElementById('run-frequency');
+        range.value = requirements.frequency;
+        document.getElementById('run-frequency-output').value = range.value;
+
+        // Apply SVG copies and moves, if not done so before.
+        if (!this.svgCopiesAndMovesApplied) {
+            this.svgCopiesAndMovesApplied = true;
+
+            // Apply SVG copy declarations.
+
+
+            // Apply SVG move declarations.
+
+        }
+
+        // Prepare SVG output.
+        requirements.outElem0 = document.querySelector("#cif-svg-wrapper-1 #yellow-cell-1");
+        requirements.outElem1 = document.querySelector("#cif-svg-wrapper-1 #yellow-cell-2");
+        requirements.outElem2 = document.querySelector("#cif-svg-wrapper-1 #yellow-cell-3");
+        requirements.outElem3 = document.querySelector("#cif-svg-wrapper-1 #yellow-cell-4");
+        requirements.outElem4 = document.querySelector("#cif-svg-wrapper-1 #yellow-cell-5");
+        requirements.outElem5 = document.querySelector("#cif-svg-wrapper-1 #yellow-cell-6");
+        requirements.outElem6 = document.querySelector("#cif-svg-wrapper-1 #yellow-cell-7");
+        requirements.outElem7 = document.querySelector("#cif-svg-wrapper-1 #yellow-cell-8");
+        requirements.outElem8 = document.querySelector("#cif-svg-wrapper-1 #yellow_rover");
+        requirements.outElem9 = document.querySelector("#cif-svg-wrapper-1 #x-axis-ry");
+        requirements.outElem10 = document.querySelector("#cif-svg-wrapper-1 #y-axis-ry");
+        requirements.outElem11 = document.querySelector("#cif-svg-wrapper-1 #blue-cell-1");
+        requirements.outElem12 = document.querySelector("#cif-svg-wrapper-1 #blue-cell-2");
+        requirements.outElem13 = document.querySelector("#cif-svg-wrapper-1 #blue-cell-3");
+        requirements.outElem14 = document.querySelector("#cif-svg-wrapper-1 #blue-cell-4");
+        requirements.outElem15 = document.querySelector("#cif-svg-wrapper-1 #blue-cell-5");
+        requirements.outElem16 = document.querySelector("#cif-svg-wrapper-1 #blue-cell-6");
+        requirements.outElem17 = document.querySelector("#cif-svg-wrapper-1 #blue-cell-7");
+        requirements.outElem18 = document.querySelector("#cif-svg-wrapper-1 #blue-cell-8");
+        requirements.outElem19 = document.querySelector("#cif-svg-wrapper-1 #blue_rover");
+        requirements.outElem20 = document.querySelector("#cif-svg-wrapper-1 #x-axis-rb");
+        requirements.outElem21 = document.querySelector("#cif-svg-wrapper-1 #y-axis-rb");
+
+        // Prepare SVG input.
+
+    }
+
+    /**
+     * Updates the user interface based on the latest state of
+     * the model. Is called at the end of each cycle.
+     *
+     * @throws {requirementsException} In case of a runtime error caused by code
+     *      generated from the CIF model.
+     */
+    updateUI() {
+        // Apply CIF/SVG output mappings.
+        var value;
+        try {
+            value = ((requirements.RoverYellow_battery_) < (1)) ? "lightgray" : ("yellow");
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"yellow-cell-1\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        requirements.outElem0.style.fill = value;
+        var value;
+        try {
+            value = ((requirements.RoverYellow_battery_) < (2)) ? "lightgray" : ("yellow");
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"yellow-cell-2\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        requirements.outElem1.style.fill = value;
+        var value;
+        try {
+            value = ((requirements.RoverYellow_battery_) < (3)) ? "lightgray" : ("yellow");
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"yellow-cell-3\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        requirements.outElem2.style.fill = value;
+        var value;
+        try {
+            value = ((requirements.RoverYellow_battery_) < (4)) ? "lightgray" : ("yellow");
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"yellow-cell-4\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        requirements.outElem3.style.fill = value;
+        var value;
+        try {
+            value = ((requirements.RoverYellow_battery_) < (5)) ? "lightgray" : ("yellow");
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"yellow-cell-5\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        requirements.outElem4.style.fill = value;
+        var value;
+        try {
+            value = ((requirements.RoverYellow_battery_) < (6)) ? "lightgray" : ("yellow");
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"yellow-cell-6\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        requirements.outElem5.style.fill = value;
+        var value;
+        try {
+            value = ((requirements.RoverYellow_battery_) < (7)) ? "lightgray" : ("yellow");
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"yellow-cell-7\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        requirements.outElem6.style.fill = value;
+        var value;
+        try {
+            value = ((requirements.RoverYellow_battery_) < (8)) ? "lightgray" : ("yellow");
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"yellow-cell-8\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        requirements.outElem7.style.fill = value;
+        var value;
+        try {
+            value = ((requirements.RoverYellow_positionX_) - (1)) * (100);
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"yellow_rover\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        requirements.outElem8.setAttribute("x", value);
+        var value;
+        try {
+            value = (300) - (((requirements.RoverYellow_positionY_) - (1)) * (100));
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"yellow_rover\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        requirements.outElem8.setAttribute("y", value);
+        var value;
+        try {
+            value = requirements.RoverYellow_positionX_;
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"x-axis-ry\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        if (requirements.outElem9.hasChildNodes()) {
+            requirements.outElem9.childNodes[0].textContent = value;
+        } else {
+            requirements.outElem9.textContent = value;
+        }
+        var value;
+        try {
+            value = requirements.RoverYellow_positionY_;
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"y-axis-ry\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        if (requirements.outElem10.hasChildNodes()) {
+            requirements.outElem10.childNodes[0].textContent = value;
+        } else {
+            requirements.outElem10.textContent = value;
+        }
+        var value;
+        try {
+            value = ((requirements.RoverBlue_battery_) < (1)) ? "lightgray" : ("blue");
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"blue-cell-1\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        requirements.outElem11.style.fill = value;
+        var value;
+        try {
+            value = ((requirements.RoverBlue_battery_) < (2)) ? "lightgray" : ("blue");
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"blue-cell-2\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        requirements.outElem12.style.fill = value;
+        var value;
+        try {
+            value = ((requirements.RoverBlue_battery_) < (3)) ? "lightgray" : ("blue");
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"blue-cell-3\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        requirements.outElem13.style.fill = value;
+        var value;
+        try {
+            value = ((requirements.RoverBlue_battery_) < (4)) ? "lightgray" : ("blue");
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"blue-cell-4\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        requirements.outElem14.style.fill = value;
+        var value;
+        try {
+            value = ((requirements.RoverBlue_battery_) < (5)) ? "lightgray" : ("blue");
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"blue-cell-5\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        requirements.outElem15.style.fill = value;
+        var value;
+        try {
+            value = ((requirements.RoverBlue_battery_) < (6)) ? "lightgray" : ("blue");
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"blue-cell-6\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        requirements.outElem16.style.fill = value;
+        var value;
+        try {
+            value = ((requirements.RoverBlue_battery_) < (7)) ? "lightgray" : ("blue");
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"blue-cell-7\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        requirements.outElem17.style.fill = value;
+        var value;
+        try {
+            value = ((requirements.RoverBlue_battery_) < (8)) ? "lightgray" : ("blue");
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"blue-cell-8\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        requirements.outElem18.style.fill = value;
+        var value;
+        try {
+            value = ((requirements.RoverBlue_positionX_) - (1)) * (100);
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"blue_rover\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        requirements.outElem19.setAttribute("x", value);
+        var value;
+        try {
+            value = (300) - (((requirements.RoverBlue_positionY_) - (1)) * (100));
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"blue_rover\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        requirements.outElem19.setAttribute("y", value);
+        var value;
+        try {
+            value = requirements.RoverBlue_positionX_;
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"x-axis-rb\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        if (requirements.outElem20.hasChildNodes()) {
+            requirements.outElem20.childNodes[0].textContent = value;
+        } else {
+            requirements.outElem20.textContent = value;
+        }
+        var value;
+        try {
+            value = requirements.RoverBlue_positionY_;
+        } catch (e) {
+            if (e instanceof requirementsException) {
+                e = new requirementsException("Failed to evaluate the value of the SVG output mapping with id \"y-axis-rb\" in SVG file \"plant.svg\".", e);
+                this.runtimeError(e);
+            }
+            throw e;
+        }
+        if (requirements.outElem21.hasChildNodes()) {
+            requirements.outElem21.childNodes[0].textContent = value;
+        } else {
+            requirements.outElem21.textContent = value;
+        }
+    }
+
+    /**
+     * Updates the values of the input variables. Other variables from the
+     * state may not be accessed or modified.
+     */
+    updateInputs() {
+        // Nothing is done here by default.
+    }
+
+    /** Logs a normal message. */
+    log(message) {
+        console.log(message);
+        var elem = document.getElementById('log-output');
+        var newEntry = document.createElement('div');
+        newEntry.innerHTML = requirementsUtils.escapeHtml(message) + '\n';
+        elem.appendChild(newEntry);
+        elem.scrollTop = elem.scrollHeight;
+    }
+
+    /** Logs an warning message. */
+    warning(message) {
+        console.log(message);
+        var elem = document.getElementById('log-output');
+        var newEntry = document.createElement('div');
+        newEntry.innerHTML = requirementsUtils.escapeHtml(message) + '\n';
+        newEntry.classList.add('warning');
+        elem.appendChild(newEntry);
+        elem.scrollTop = elem.scrollHeight;
+    }
+
+    /** Logs an error message. */
+    error(message) {
+        console.log(message);
+        var elem = document.getElementById('log-output');
+        var newEntry = document.createElement('div');
+        newEntry.innerHTML = requirementsUtils.escapeHtml(message) + '\n';
+        newEntry.classList.add('error');
+        elem.appendChild(newEntry);
+        elem.scrollTop = elem.scrollHeight;
+    }
+
+    /** Logs a runtime error of type requirementsException. */
+    runtimeError(e, isCause = false) {
+        console.assert(e instanceof requirementsException);
+        if (isCause) {
+            this.error("CAUSE: " + e.message);
+        } else {
+            this.error("ERROR: " + e.message);
+        }
+        if (e.cause) {
+            this.runtimeError(e.cause, true);
+        }
+    }
+
+    /**
+     * Informs about the duration of a single execution.
+     *
+     * @param duration The duration of the execution, in milliseconds.
+     * @param cycleTime The desired maximum duration of the execution, in
+     *      milliseconds, or '-1' if not available.
+     */
+    infoExec(duration, cycleTime) {
+        // Nothing is done here by default.
+    }
+
+    /**
+     * Informs that an event will be or has been executed.
+     *
+     * @param idx The 0-based index of the event.
+     * @param pre Whether the event will be executed ('true') or has
+     *      been executed ('false').
+     */
+    infoEvent(idx, pre) {
+        if (pre) {
+            if (this.doTransitionOutput) requirements.log(requirementsUtils.fmt('Transition: event %s', requirements.getEventName(idx)));
+        } else {
+            if (this.doStateOutput) requirements.log('State: ' + requirements.getStateText());
+        }
+    }
+
+    /**
+     * Informs that the code is about to be executed. For the
+     * {@link #firstExec} the state has not yet been initialized, except for
+     * {@link #time}.
+     */
+    preExec() {
+        // Nothing is done here by default.
+    }
+
+    /** Informs that the code was just executed. */
+    postExec() {
+        this.updateUI();
+    }
+
+    /**
+     * Returns the name of an event.
+     *
+     * @param idx The 0-based index of the event.
+     * @return The name of the event.
+     */
+    getEventName(idx) {
+        return this.EVENT_NAMES[idx];
+    }
+
+    /**
+     * Returns a single-line textual representation of the model state.
+     *
+     * @return The single-line textual representation of the model state.
+     */
+    getStateText() {
+        var state = requirementsUtils.fmt('time=%s', requirements.time);
+        state += requirementsUtils.fmt(', RoverBlue.battery=%s', requirementsUtils.valueToStr(requirements.RoverBlue_battery_));
+        state += requirementsUtils.fmt(', RoverBlue.positionX=%s', requirementsUtils.valueToStr(requirements.RoverBlue_positionX_));
+        state += requirementsUtils.fmt(', RoverBlue.positionY=%s', requirementsUtils.valueToStr(requirements.RoverBlue_positionY_));
+        state += requirementsUtils.fmt(', RoverYellow.battery=%s', requirementsUtils.valueToStr(requirements.RoverYellow_battery_));
+        state += requirementsUtils.fmt(', RoverYellow.positionX=%s', requirementsUtils.valueToStr(requirements.RoverYellow_positionX_));
+        state += requirementsUtils.fmt(', RoverYellow.positionY=%s', requirementsUtils.valueToStr(requirements.RoverYellow_positionY_));
+        return state;
+    }
+
+
+
+
+
+    /**
+     * Print output for all relevant print declarations.
+     *
+     * @param idx The 0-based event index of the transition, or '-2' for
+     *      time transitions, or '-3' for the 'initial' transition.
+     * @param pre Whether to print output for the pre/source state of the
+     *      transition ('true') or for the post/target state of the
+     *      transition ('false').
+     * @throws {requirementsException} In case of a runtime error caused by code
+     *      generated from the CIF model.
+     */
+    printOutput(idx, pre) {
+        // No print declarations.
+    }
+
+    /**
+     * Informs that new print output is available.
+     *
+     * @param text The text being printed.
+     * @param target The file or special target to which text is to be printed.
+     *      If printed to a file, an absolute or relative local file system
+     *      path is given. Paths may contain both '/' and '\\'
+     *      as file separators. Use {@link requirementsUtils#normalizePrintTarget}
+     *      to normalize the path to use '/' file separators. There are two
+     *      special targets: ':stdout' to print to the standard output stream,
+     *      and ':stderr' to print to the standard error stream.
+     */
+    infoPrintOutput(text, target) {
+        if (target == ':stdout') {
+            requirements.log(text);
+        } else if (target == ':stderr') {
+            requirements.error(text);
+        } else {
+            var path = requirementsUtils.normalizePrintTarget(target);
+            requirements.infoPrintOutput(path + ': ' + text, ':stdout');
+        }
+    }
+}
+        </script>
+        <script type="text/javascript">
+            var requirements;
+
+            function onLoad() {
+                requirements = new requirements_class();
+                reset();
+                start();
+            }
+
+            function applySvgCopy(wrapId, elemId, pre, post) {
+                // This implementation is inspired by a method from Eclipse ESCET:
+                // 'org.eclipse.escet.common.svg.SvgUtils.copy'.
+                var escapedWrapId = CSS.escape(wrapId);
+                var escapedElemId = CSS.escape(elemId);
+                var elem = document.querySelector(requirementsUtils.fmt("#%s #%s", escapedWrapId, escapedElemId));
+                var copy = elem.cloneNode(true);
+                applySvgCopyRename(copy, pre, post);
+                elem.parentNode.insertBefore(copy, elem);
+            }
+
+            function applySvgCopyRename(elem, pre, post) {
+                // This implementation is inspired by a method from Eclipse ESCET:
+                // 'org.eclipse.escet.common.svg.SvgUtils.renameElements'.
+                elem.setAttribute('id', pre + elem.getAttribute('id') + post);
+                for (var i = 0; i < elem.children.length; i++) {
+                    var child = elem.children[i];
+                    applySvgCopyRename(child, pre, post);
+                }
+            }
+
+            function applySvgMove(wrapId, elemId, x, y) {
+                // This implementation is inspired by a method from Eclipse ESCET:
+                // 'org.eclipse.escet.common.svg.SvgUtils.move'.
+                var escapedWrapId = CSS.escape(wrapId);
+                var escapedElemId = CSS.escape(elemId);
+                var root = document.querySelector(requirementsUtils.fmt("#%s > svg", escapedWrapId));
+                var elem = document.querySelector(requirementsUtils.fmt("#%s #%s", escapedWrapId, escapedElemId));
+                var rootBounds = root.getBoundingClientRect();
+                var elemBounds = elem.getBoundingClientRect();
+                var nx = elemBounds.x - rootBounds.x;
+                var ny = elemBounds.y - rootBounds.y;
+                var glob = elem.getScreenCTM();
+                glob = glob.translate(nx, ny);
+                var a = glob.a;
+                var b = glob.b;
+                var c = glob.c;
+                var d = glob.d;
+                var dbca = d - b * c / a;
+                var dy = (y - ny - b * (x - nx) / a) / dbca;
+                var dx = (x - nx) / a - c / a * dy;
+                var transform = elem.getAttribute('transform');
+                if (transform === null) {
+                    transform = '';
+                }
+                if (transform.length > 0) {
+                    transform += ' ';
+                }
+                transform += requirementsUtils.fmt("translate(%f,%f)", dx, dy);
+                elem.setAttribute('transform', transform);
+            }
+
+            function toggleStartStop() {
+                if (requirements.playing) {
+                    stop();
+                } else {
+                    start();
+                }
+            }
+
+            function start() {
+                if (!requirements.playing) {
+                    requirements.log('start');
+                    var btn = document.getElementById('start-stop-toggle');
+                    btn.value = 'Stop';
+                    requirements.start();
+                }
+            }
+
+            function stop() {
+                if (requirements.playing){
+                    requirements.log('stop');
+                    var btn = document.getElementById('start-stop-toggle');
+                    btn.value = 'Start';
+                    requirements.stop();
+                }
+            }
+
+            function reset() {
+                stop();
+                requirements.reset();
+                clearLog();
+            }
+
+            function updateFrequency() {
+                // Update frequency.
+                var range = document.getElementById('run-frequency');
+                requirements.frequency = range.value;
+
+                // Update frequency UI.
+                document.getElementById('run-frequency-output').value = range.value;
+            }
+
+            function clearLog() {
+                document.getElementById('log-output').innerHTML = '';
+            }
+
+            function toggleSettings(btn) {
+                var elem = document.getElementById('settings-dropdown');
+                if (elem.classList.contains('expanded')) {
+                    elem.classList.remove('expanded');
+                    elem.classList.add('collapsed');
+                } else {
+                    elem.classList.remove('collapsed');
+                    elem.classList.add('expanded');
+                }
+            }
+
+            function toggleLogStates(menuItem) {
+                requirements.doStateOutput = menuItem.checked;
+            }
+
+            function toggleLogTransitions(menuItem) {
+                requirements.doTransitionOutput = menuItem.checked;
+            }
+
+            function showHide(btn) {
+                var elem = document.getElementById('flex-container');
+                if (elem.classList.contains('expanded')) {
+                    elem.classList.remove('expanded');
+                    elem.classList.add('collapsed');
+                    btn.value = 'Show';
+                } else {
+                    elem.classList.remove('collapsed');
+                    elem.classList.add('expanded');
+                    btn.value = 'Hide';
+                }
+            }
+
+            function toggleSVG(elemId) {
+                var elem = document.getElementById(elemId);
+                if (elem.classList.contains('svg-visible')) {
+                    elem.classList.remove('svg-visible');
+                    elem.classList.add('svg-hidden');
+                } else {
+                    elem.classList.remove('svg-hidden');
+                    elem.classList.add('svg-visible');
+                }
+            }
+
+            function downloadLog() {
+                // Get log content.
+                var modelName = document.getElementById('model-name').innerHTML;
+                var content = document.getElementById('log-output').textContent;
+
+                // Create URL object with log content.
+                var blob = new Blob([content], {type: 'plain/text'});
+                var url = URL.createObjectURL(blob);
+
+                // Create a new invisible 'a' element that serves as the download link.
+                var link = document.createElement('a');
+                link.style.display = 'none';
+                link.href = url;
+                link.download = modelName + '.' + new Date().toISOString() + '.log.txt';
+
+                // Click the link to start the download, after properly adding the link to the document.
+                document.body.appendChild(link);
+                link.click();
+
+                // Clean up the URL and temporary link element.
+                URL.revokeObjectURL(url);
+                link.remove();
+            }
+        </script>
+    </head>
+    <body onload="onLoad()">
+        <div class="expanded" id="flex-container">
+            <div id="content">
+                <h1 id="model-name">requirements</h1>
+                    <div id="cif-svg-wrapper-1" class="svg-visible"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="text/ecmascript" width="861" zoomAndPan="magnify" contentStyleType="text/css" height="400" preserveAspectRatio="xMidYMid meet" version="1.0">
+  <svg contentScriptType="text/ecmascript" width="600" zoomAndPan="magnify" contentStyleType="text/css" height="400" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid meet" version="1.0">
+<!--Grid-->
+    <rect fill="#f4f0ea" height="400" width="600"/>
+    <g stroke-width="1" stroke="#cccccc">
+<!--Vertical lines-->
+      <line y2="400" x1="100" x2="100" y1="0"/>
+      <line y2="400" x1="200" x2="200" y1="0"/>
+      <line y2="400" x1="300" x2="300" y1="0"/>
+      <line y2="400" x1="400" x2="400" y1="0"/>
+      <line y2="400" x1="500" x2="500" y1="0"/>
+      <line y2="400" x1="600" x2="600" y1="0"/>
+<!--Horizontal lines-->
+      <line y2="100" x1="0" x2="600" y1="100"/>
+      <line y2="200" x1="0" x2="600" y1="200"/>
+      <line y2="300" x1="0" x2="600" y1="300"/>
+      <line y2="400" x1="0" x2="600" y1="400"/>
+    </g>
+<!--Red obstacle-->
+    <rect fill="#e63946" x="200" width="100" height="100" y="200"/>
+<!--Yellow rover-->
+    <svg contentScriptType="text/ecmascript" zoomAndPan="magnify" contentStyleType="text/css" id="yellow_rover" version="1.1" xml:space="preserve" width="100px" fill="#ff9900" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32" height="100px" x="200" y="0">
+      <path d="M29,16h-2.6l1.6-4.7c0.2-0.5-0.1-1.1-0.6-1.3c-0.5-0.2-1.1,0.1-1.3,0.6L24.3,16H14v-3c0-0.3-0.1-0.5-0.3-0.7l-1.8-1.8     C12.6,9.5,13,8.3,13,7c0-1.6-0.6-3.1-1.8-4.2c-0.4-0.4-1-0.4-1.4,0L7,5.6L3.7,2.3c-0.4-0.4-1-0.4-1.4,0s-0.4,1,0,1.4L5.6,7L2.8,9.8     c-0.4,0.4-0.4,1,0,1.4C3.9,12.4,5.4,13,7,13c1.3,0,2.5-0.4,3.5-1.1l1.5,1.5V16H3c-0.6,0-1,0.4-1,1v4c0,0.3,0.1,0.6,0.3,0.8l3,2.6     C5.1,24.9,5,25.4,5,26c0,2.2,1.8,4,4,4c2.2,0,3.9-1.7,4-3.9l6,0c0,2.2,1.8,3.9,4,3.9c2.2,0,4-1.8,4-4c0-0.6-0.1-1.1-0.4-1.6l3-2.6     c0.2-0.2,0.3-0.5,0.3-0.8v-4C30,16.4,29.6,16,29,16z M9,28c-1.1,0-2-0.9-2-2s0.9-2,2-2s2,0.9,2,2S10.1,28,9,28z M23,28     c-1.1,0-2-0.9-2-2s0.9-2,2-2s2,0.9,2,2S24.1,28,23,28z"/>
+    </svg>
+<!--Blue rover-->
+    <svg contentScriptType="text/ecmascript" zoomAndPan="magnify" contentStyleType="text/css" id="blue_rover" version="1.0" xml:space="preserve" width="100px" fill="#457b9d" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32" height="100px" x="300" y="300">
+      <path d="M29,16h-2.6l1.6-4.7c0.2-0.5-0.1-1.1-0.6-1.3c-0.5-0.2-1.1,0.1-1.3,0.6L24.3,16H14v-3c0-0.3-0.1-0.5-0.3-0.7l-1.8-1.8     C12.6,9.5,13,8.3,13,7c0-1.6-0.6-3.1-1.8-4.2c-0.4-0.4-1-0.4-1.4,0L7,5.6L3.7,2.3c-0.4-0.4-1-0.4-1.4,0s-0.4,1,0,1.4L5.6,7L2.8,9.8     c-0.4,0.4-0.4,1,0,1.4C3.9,12.4,5.4,13,7,13c1.3,0,2.5-0.4,3.5-1.1l1.5,1.5V16H3c-0.6,0-1,0.4-1,1v4c0,0.3,0.1,0.6,0.3,0.8l3,2.6     C5.1,24.9,5,25.4,5,26c0,2.2,1.8,4,4,4c2.2,0,3.9-1.7,4-3.9l6,0c0,2.2,1.8,3.9,4,3.9c2.2,0,4-1.8,4-4c0-0.6-0.1-1.1-0.4-1.6l3-2.6     c0.2-0.2,0.3-0.5,0.3-0.8v-4C30,16.4,29.6,16,29,16z M9,28c-1.1,0-2-0.9-2-2s0.9-2,2-2s2,0.9,2,2S10.1,28,9,28z M23,28     c-1.1,0-2-0.9-2-2s0.9-2,2-2s2,0.9,2,2S24.1,28,23,28z"/>
+    </svg>
+<!--Samples-->
+    <svg x="80" contentScriptType="text/ecmascript" y="300" width="20px" zoomAndPan="magnify" contentStyleType="text/css" viewBox="0 0 24 24" height="20px" preserveAspectRatio="xMidYMid meet" version="1.0">
+      <path fill="#be4bdb" d="M11.5757 1.42426C11.81 1.18995 12.1899 1.18995 12.4243 1.42426L22.5757 11.5757C22.81 11.81 22.8101 12.1899 22.5757 12.4243L12.4243 22.5757C12.19 22.81 11.8101 22.8101 11.5757 22.5757L1.42426 12.4243C1.18995 12.19 1.18995 11.8101 1.42426 11.5757L11.5757 1.42426Z" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor"/>
+    </svg>
+    <svg contentScriptType="text/ecmascript" zoomAndPan="magnify" contentStyleType="text/css" id="wave" version="1.0" width="20px" fill="#000000" preserveAspectRatio="xMidYMid meet" data-name="Line Color" viewBox="0 0 24 24" height="20px" class="icon line-color" x="180" y="100">
+      <path style="fill: none; stroke: rgb(44, 169, 188); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;" d="M21,11c-2.25,0-2.25,2-4.5,2S14.25,11,12,11,9.75,13,7.5,13,5.25,11,3,11" id="secondary"/>
+      <path style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;" d="M3,5C5.25,5,5.25,7,7.5,7S9.75,5,12,5s2.26,2,4.51,2S18.75,5,21,5" id="primary"/>
+      <path id="primary-2" d="M21,17c-2.25,0-2.25,2-4.5,2S14.25,17,12,17,9.75,19,7.5,19,5.25,17,3,17" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;" data-name="primary"/>
+    </svg>
+    <svg contentScriptType="text/ecmascript" zoomAndPan="magnify" contentStyleType="text/css" focusable="false" role="img" version="1.0" aria-hidden="true" width="20px" fill="#008000" preserveAspectRatio="xMidYMid meet" viewBox="0 0 14 14" height="20px" x="580" y="100">
+      <path d="m 9.2375,10.433335 c -0.9041667,0.45 -1.9145833,0.71666 -2.9333333,0.71666 -1.7125,0 -3.1479167,-0.83541 -3.1479167,-0.83541 -0.3354167,0 -0.7375,1.35208 -1.31875,1.35208 -0.5625,0 -0.8375,-0.5 -0.8375,-0.80208 0,-0.68959 1.325,-1.22709 1.325,-1.61042 0,0 -0.2604167,-0.44167 -0.2604167,-1.23333 0,-2.10834 1.69375,-3.6125 3.5958334,-4.23542 1.3729166,-0.45 4.2916666,0.0729 5.2229163,-0.80208 0.36875,-0.3375 0.55,-0.65 1.1125,-0.65 0.75625,0 1.004167,1.94166 1.004167,2.50625 0,2.31041 -1.135417,4.30208 -3.7625,5.59375 z m -5.2979167,-1.575 c 1.3229167,-1.87292 3.0104167,-2.68334 5.36875,-2.5 0.1833334,0.0146 0.34375,-0.12292 0.3583334,-0.30625 0.014583,-0.18334 -0.1229167,-0.34375 -0.30625,-0.35834 -2.5833334,-0.2 -4.4979167,0.70625 -5.9645834,2.78125 -0.10625,0.15 -0.070833,0.35834 0.079167,0.46459 0.15,0.10625 0.3583333,0.0708 0.4645833,-0.0813 z"/>
+    </svg>
+    <svg contentScriptType="text/ecmascript" zoomAndPan="magnify" contentStyleType="text/css" version="1.0" width="20px" fill="#895129" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" height="20px" x="480" y="200">
+      <path d="M12 11.8c1-.4.7-1.8 0-2.4-1.1-.9-2.7-.4-3.4.8-1.5 2.4.9 5 3.4 4.9 2.7-.2 4.3-2.9 3.7-5.4-.7-3-3.9-4.5-6.7-3.6-2.6.8-4.2 3.5-4 6.2.3 3 2.6 5.4 5.5 5.9 2.8.5 5.7-.8 7.2-3.2.7-1.1 1.2-2.4 1.2-3.8 0-.5.5-1 1.1-.9.8 0 1 .8.9 1.4-.4 4.7-4.5 8.6-9.3 8.6-5.9 0-10.5-6.2-8-11.8 2.5-5.4 10.3-6.5 13.3-1.2 1.5 2.5 1.2 5.8-.9 7.9-2 2-5.3 2.4-7.7.7-2.2-1.6-2.9-4.9-1.1-7.2 1.7-2.3 5.5-2.4 7 .2 1.1 1.9 0 5.2-2.5 4.9-1.6 0-3-1.7-2.1-3.2.6-.9 1.9-.6 2.3.1.2.8.1 1.1.1 1.1z"/>
+    </svg>
+<!--Lab-->
+    <svg contentScriptType="text/ecmascript" zoomAndPan="magnify" contentStyleType="text/css" version="1.0" width="20px" fill="#800000" preserveAspectRatio="xMidYMid meet" viewBox="-1 0 19 19" height="20px" class="cf-icon-svg" x="580" y="380">
+      <path d="M13.27 14.91a.554.554 0 0 1-.392-.946 6.201 6.201 0 1 0-8.763 0 .554.554 0 1 1-.784.784 7.31 7.31 0 1 1 10.331 0 .55.55 0 0 1-.392.162zm-2.16-2.159a.554.554 0 0 1-.392-.946 3.142 3.142 0 1 0-4.444 0 .554.554 0 0 1-.783.784 4.25 4.25 0 1 1 6.011 0 .553.553 0 0 1-.391.162zm-1.117 3.32H9.05V10.99a1.511 1.511 0 1 0-1.108 0v5.081H7a.554.554 0 0 0 0 1.109h2.993a.554.554 0 0 0 0-1.109z"/>
+    </svg>
+    <svg contentScriptType="text/ecmascript" zoomAndPan="magnify" contentStyleType="text/css" version="1.1" width="20px" fill="#800000" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32" height="20px" x="500" y="380">
+      <path d="M19.332 19.041c0 0-1.664 2.125-3.79 0-2.062-2-3.562 0-3.562 0l-4.967 9.79c-0.144 0.533 0.173 1.081 0.706 1.224h16.497c0.533-0.143 0.85-0.69 0.707-1.224l-5.591-9.79zM26.939 28.33l-7.979-13.428v-0.025l-0.014-7.869h0.551c0.826 0 1.498-0.671 1.498-1.499 0-0.827-0.672-1.498-1.498-1.498h-7.995c-0.827 0-1.498 0.671-1.498 1.498 0 0.828 0.671 1.499 1.498 1.499h0.482l-0.016 7.871-6.908 13.451c-0.428 1.599 0.521 3.242 2.119 3.67h17.641c1.6-0.428 2.549-2.071 2.119-3.67zM24.553 30.998l-17.108-0.019c-1.065-0.286-1.697-1.382-1.412-2.446l6.947-13.616 0.021-8.908h-1.498c-0.275 0-0.499-0.224-0.499-0.5s0.224-0.499 0.499-0.499h7.995c0.275 0 0.498 0.224 0.498 0.499 0 0.276-0.223 0.5-0.498 0.5h-1.498l0.025 8.875 7.939 13.666c0.286 1.067-0.347 2.163-1.411 2.448zM16.48 2.512c0 0.552 0.448 1 1 1s1-0.448 1-1-0.447-1-1-1-1 0.447-1 1zM17.48 0.012c0.828 0 1.5-0.671 1.5-1.5s-0.672-1.5-1.5-1.5-1.5 0.671-1.5 1.5 0.672 1.5 1.5 1.5zM13.48 2.512c0.553 0 1-0.448 1-1s-0.447-1-1-1-1 0.448-1 1 0.447 1 1 1z"/>
+    </svg>
+<!--Charge Stations-->
+    <svg contentScriptType="text/ecmascript" zoomAndPan="magnify" baseProfile="tiny" contentStyleType="text/css" version="1.2" width="20px" fill="#539fec" preserveAspectRatio="xMidYMid meet" viewBox="0 0 50 50" height="20px" overflow="inherit" x="280" y="0">
+      <path d="M41 14h-5v-11.081c0-1.06-.895-1.919-2-1.919s-2 .859-2 1.919v11.081h-16v-11.081c0-1.06-.895-1.919-2.001-1.919-1.105 0-1.999.859-1.999 1.919v11.081h-5c-.553 0-1 .869-1 1.399v4.801c0 5.759 10 12.446 10 21.696v3.104h4v4h8v-4h4v-3.104c0-9.25 10-15.938 10-21.696v-4.801c0-.53-.447-1.399-1-1.399m-18.093 16.388c.065-.21-.067-.388-.296-.388h-3.885c-.23 0-.295-.13-.149-.299 0 0 8.005-10.159 8.161-10.355.118-.186.248-.121.207.093-.062.271-1.771 7.202-1.771 7.202-.083.204.037.359.264.359h3.887c.229 0 .302.154.162.328 0 0-8.017 10.402-8.161 10.576-.145.174-.279.121-.206-.175.073-.297 1.787-7.341 1.787-7.341"/>
+    </svg>
+    <svg contentScriptType="text/ecmascript" zoomAndPan="magnify" baseProfile="tiny" contentStyleType="text/css" version="1.2" width="20px" fill="#539fec" preserveAspectRatio="xMidYMid meet" viewBox="0 0 50 50" height="20px" overflow="inherit" x="380" y="300">
+      <path d="M41 14h-5v-11.081c0-1.06-.895-1.919-2-1.919s-2 .859-2 1.919v11.081h-16v-11.081c0-1.06-.895-1.919-2.001-1.919-1.105 0-1.999.859-1.999 1.919v11.081h-5c-.553 0-1 .869-1 1.399v4.801c0 5.759 10 12.446 10 21.696v3.104h4v4h8v-4h4v-3.104c0-9.25 10-15.938 10-21.696v-4.801c0-.53-.447-1.399-1-1.399m-18.093 16.388c.065-.21-.067-.388-.296-.388h-3.885c-.23 0-.295-.13-.149-.299 0 0 8.005-10.159 8.161-10.355.118-.186.248-.121.207.093-.062.271-1.771 7.202-1.771 7.202-.083.204.037.359.264.359h3.887c.229 0 .302.154.162.328 0 0-8.017 10.402-8.161 10.576-.145.174-.279.121-.206-.175.073-.297 1.787-7.341 1.787-7.341"/>
+    </svg>
+  </svg>
+<!--Blue Rover-->
+  <svg x="600" contentScriptType="text/ecmascript" y="0" width="270" zoomAndPan="magnify" style="font-family: Arial, sans-serif; font-size: 12px;" contentStyleType="text/css" height="300" preserveAspectRatio="xMidYMid meet" version="1.0">
+    <rect x="10" y="10" fill="white" width="250" height="120" stroke="black" stroke-width="1"/>
+    <text font-weight="bold" x="20" y="30">Blue Rover</text>
+    <text x="20" y="50">Energy</text>
+    <svg contentScriptType="text/ecmascript" zoomAndPan="magnify" stroke="#000000" contentStyleType="text/css" stroke-linecap="round" version="1.0" width="160" fill="none" preserveAspectRatio="xMidYMid meet" stroke-width="2" height="20" stroke-linejoin="round" x="80" y="38">
+      <rect rx="2" ry="2" x="0" width="160" height="20" y="0"/>
+      <line y2="15" x1="160" x2="160" y1="5"/>
+    </svg>
+<!--Battery Blue-->
+    <rect fill="blue" width="18" x="82" height="16" id="blue-cell-1" y="40"/>
+    <rect fill="blue" width="18" x="102" height="16" id="blue-cell-2" y="40"/>
+    <rect fill="lightgray" width="18" x="122" height="16" id="blue-cell-3" y="40"/>
+    <rect fill="lightgray" width="18" x="142" height="16" id="blue-cell-4" y="40"/>
+    <rect fill="lightgray" width="18" x="162" height="16" id="blue-cell-5" y="40"/>
+    <rect fill="lightgray" width="18" x="182" height="16" id="blue-cell-6" y="40"/>
+    <rect fill="lightgray" width="18" x="202" height="16" id="blue-cell-7" y="40"/>
+    <rect fill="lightgray" width="18" x="222" height="16" id="blue-cell-8" y="40"/>
+<!--Positions-->
+    <text x="20" y="80">Position</text>
+    <text x="80" y="80">x:</text>
+    <text x="100" y="80" id="x-axis-rb">4</text>
+    <text x="120" y="80">y:</text>
+    <text x="140" y="80" id="y-axis-rb">4</text>
+<!--Collections-->
+    <text x="20" y="100">Sample collection</text>
+    <text x="80" y="120">◆</text>
+    <text x="100" y="120">0</text>
+    <circle fill="brown" r="6" cx="120" cy="117"/>
+    <text x="135" y="120">0</text>
+    <rect fill="lightblue" x="150" width="12" height="12" y="112"/>
+    <text x="170" y="120">0</text>
+    <circle fill="green" r="6" cx="190" cy="117"/>
+    <text x="205" y="120">0</text>
+<!--Yellow Rover-->
+    <rect x="10" y="140" fill="white" width="250" height="120" stroke="black" stroke-width="1"/>
+    <text font-weight="bold" x="20" y="160">Yellow Rover</text>
+    <text x="20" y="180">Energy</text>
+    <svg contentScriptType="text/ecmascript" zoomAndPan="magnify" stroke="#000000" contentStyleType="text/css" stroke-linecap="round" version="1.0" width="160" fill="none" preserveAspectRatio="xMidYMid meet" stroke-width="2" height="20" stroke-linejoin="round" x="80" y="168">
+      <rect rx="2" ry="2" x="0" width="160" height="20" y="0"/>
+      <line y2="15" x1="160" x2="160" y1="5"/>
+    </svg>
+<!--Battery Yellow-->
+    <rect fill="yellow" width="18" x="82" height="16" id="yellow-cell-1" y="170"/>
+    <rect fill="yellow" width="18" x="102" height="16" id="yellow-cell-2" y="170"/>
+    <rect fill="yellow" width="18" x="122" height="16" id="yellow-cell-3" y="170"/>
+    <rect fill="yellow" width="18" x="142" height="16" id="yellow-cell-4" y="170"/>
+    <rect fill="lightgray" width="18" x="162" height="16" id="yellow-cell-5" y="170"/>
+    <rect fill="lightgray" width="18" x="182" height="16" id="yellow-cell-6" y="170"/>
+    <rect fill="lightgray" width="18" x="202" height="16" id="yellow-cell-7" y="170"/>
+    <rect fill="lightgray" width="18" x="222" height="16" id="yellow-cell-8" y="170"/>
+<!--Positions-->
+    <text x="20" y="210">Position</text>
+    <text x="80" y="210">x:</text>
+    <text x="100" y="210" id="x-axis-ry">4</text>
+    <text x="120" y="210">y:</text>
+    <text x="140" y="210" id="y-axis-ry">4</text>
+<!--Collections-->
+    <text x="20" y="230">Sample collection</text>
+    <text x="80" y="250">◆</text>
+    <text x="100" y="250">0</text>
+    <circle fill="brown" r="6" cx="120" cy="247"/>
+    <text x="135" y="250">2</text>
+    <rect fill="lightblue" x="150" width="12" height="12" y="242"/>
+    <text x="170" y="250">0</text>
+    <circle fill="green" r="6" cx="190" cy="247"/>
+    <text x="205" y="250">0</text>
+  </svg>
+</svg></div>
+            </div>
+            <div id="log-pane">
+                <div class="div-show-hide-btn">
+                    <span>
+
+                        <input id="run-frequency" type="range" min="1" max="120"
+                                list="run-frequency-markers" oninput="updateFrequency(); return false;"/>
+                        <output id="run-frequency-output" for="run-frequency"></output>
+                        <label for="run-frequency"> Hz</label>
+                        <datalist id="run-frequency-markers">
+                            <option value="30"/>
+                            <option value="60"/>
+                            <option value="90"/>
+                            <option value="120"/>
+                        </datalist>
+                        <div class="dropdown" id="settings-dropdown" class="collapsed">
+                            <input value="Settings" type="button" onclick="toggleSettings(); return false;"/>
+                            <div class="dropdown-content">
+                                <div class="dropdown-item dropdown-item-checked">
+                                    <label for="log-states">
+                                        <input type="checkbox" id="log-states" name="log-states"
+                                                onchange="toggleLogStates(this)"/>
+                                        <span class="dropdown-item-checked-text">Log states</span>
+                                    </label>
+                                </div>
+                                <div class="dropdown-item dropdown-item-checked">
+                                    <label for="log-transitions">
+                                        <input type="checkbox" id="log-transitions" name="log-transitions"
+                                                onchange="toggleLogTransitions(this)" checked/>
+                                        <span class="dropdown-item-checked-text">Log transitions</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <input id="start-stop-toggle" value="Stop" type="button"
+                                onclick="toggleStartStop(); return false;"/>
+                        <input value="Reset" type="button" onclick="reset(); return false;"/>
+                        <input value="Download log" type="button" onclick="downloadLog(); return false;"/>
+                        <input value="Hide" type="button" onclick="showHide(this); return false;"/>
+                    </span>
+                </div>
+                <div id="div-txt-area-background">
+                    <div class="div-txt-area">
+                        <div id="log-output"></div>
+                    </div>
+                <div>
+                <div id="div-log-pane-footer"></div>
+            </div>
+        </div>
+    </body>
+</html>
