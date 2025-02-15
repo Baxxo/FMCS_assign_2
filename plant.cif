@@ -22,7 +22,7 @@ controllable event RoverYFlora;
 controllable event RoverYFossil;
 
 // Rover Yellow empty items because it is on the lab
-// controllable event RoverYUnload;
+controllable event RoverYUnload;
 
 
 const int ChargeStation1_X = 3;
@@ -103,7 +103,7 @@ controllable event RoverBFlora;
 controllable event RoverBFossil;
 
 // Rover Blue empty items because it is on the lab
-// controllable event RoverBUnload;
+controllable event RoverBUnload;
 
 plant RoverBlue:
 
@@ -165,23 +165,25 @@ plant UncontrollCell:
 
 end
 
-/*
 
-controllable event LabBusy;
-controllable event LabTransmit;
 
+controllable event processes;
+controllable event transmit;
+
+
+const int Lab_X = 6;
+const int Lab_Y = 1;
 
 plant Lab:
 
-    const int positionX = 4;
-    const int positionY = 1;
-    disc bool busy = false;
-    disc bool processed = false;
+    location READY: initial; marked;
+        edge RoverBUnload, RoverYUnload goto BUSY;
 
-    location: initial; marked;
-        edge RoverBUnload, RoverYUnload do busy := true;
-        edge LabBusy when busy = true do processed := true, busy := false;
-        edge LabTransmit when busy = false  and processed = true do processed := false;
+    location BUSY: marked;
+        edge processes goto TRANSMIT;
+
+    location TRANSMIT: marked;
+        edge transmit goto READY;
 
 end
-*/
+
