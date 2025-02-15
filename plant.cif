@@ -22,23 +22,13 @@ controllable event RoverYFlora;
 controllable event RoverYFossil;
 
 // Rover Yellow empty items because it is on the lab
-controllable event RoverYUnload;
+// controllable event RoverYUnload;
 
 
-plant ChargeStation1:
-    const int positionX = 3;
-    const int positionY = 4;
-
-    location: initial;marked;
-end
-
-
-plant ChargeStation2:
-    const int positionX = 4;
-    const int positionY = 1;
-
-    location: initial;marked;
-end
+const int ChargeStation1_X = 3;
+const int ChargeStation1_Y = 4;
+const int ChargeStation2_X = 4;
+const int ChargeStation2_Y = 1;
 
 plant RoverYellow:
 
@@ -51,13 +41,13 @@ plant RoverYellow:
     disc int[0..3] fossil = 0;
 
     location: initial; marked;
-        edge RoverYMoveUp when positionY < 4 and battery > 0
+        edge RoverYMoveUp when positionY < 4 and battery > 1
             do positionY := positionY + 1, battery := battery -1;
-        edge RoverYMoveDown when positionY > 1  and battery > 0
+        edge RoverYMoveDown when positionY > 1  and battery > 1
             do positionY := positionY - 1, battery := battery -1;
-        edge RoverYMoveRight when positionX < 6 and battery > 0
+        edge RoverYMoveRight when positionX < 6 and battery > 1
             do positionX := positionX + 1, battery := battery -1;
-        edge RoverYMoveLeft when positionX > 1 and battery > 0
+        edge RoverYMoveLeft when positionX > 1 and battery > 1
             do positionX := positionX - 1, battery := battery -1;
 
         edge uRoverYMoveUp, uRoverYMoveDown, uRoverYMoveRight, uRoverYMoveLeft when
@@ -65,8 +55,8 @@ plant RoverYellow:
 
 
         edge ChargeBatteryY when (
-            (ChargeStation1.positionX = positionX and ChargeStation1.positionY = positionY) or
-            (ChargeStation2.positionX = positionX and ChargeStation2.positionY = positionY)
+            (ChargeStation1_X = positionX and ChargeStation1_Y = positionY) or
+            (ChargeStation2_X = positionX and ChargeStation2_Y = positionY)
         ) do battery := 8;
 
         edge RoverYMineral when mineral < 3 do mineral := mineral + 1;
@@ -113,26 +103,26 @@ controllable event RoverBFlora;
 controllable event RoverBFossil;
 
 // Rover Blue empty items because it is on the lab
-controllable event RoverBUnload;
+// controllable event RoverBUnload;
 
 plant RoverBlue:
 
     disc int[1..6] positionX = 4; // 300 = (4-1) * 100 = 3 * 100
     disc int[1..4] positionY = 1; // 300 = 300 - (0) = 300 - (100 * (1 - 1))
-    disc int[0..8] battery = 2;
+    disc int[0..8] battery = 4;
     disc int[0..3] mineral = 0;
     disc int[0..3] liquid = 0;
     disc int[0..3] flora = 0;
     disc int[0..3] fossil = 0;
 
     location: initial; marked;
-        edge RoverBMoveUp when positionY < 4 and battery > 0
+        edge RoverBMoveUp when positionY < 4 and battery > 1
             do positionY := positionY + 1, battery := battery -1;
-        edge RoverBMoveDown when positionY > 1  and battery > 0
+        edge RoverBMoveDown when positionY > 1  and battery > 1
             do positionY := positionY - 1, battery := battery -1;
-        edge RoverBMoveRight when positionX < 6 and battery > 0
+        edge RoverBMoveRight when positionX < 6 and battery > 1
             do positionX := positionX + 1, battery := battery -1;
-        edge RoverBMoveLeft when positionX > 1 and battery > 0
+        edge RoverBMoveLeft when positionX > 1 and battery > 1
             do positionX := positionX - 1, battery := battery -1;
 
         edge uRoverBMoveUp, uRoverBMoveDown, uRoverBMoveRight, uRoverBMoveLeft when
@@ -140,8 +130,8 @@ plant RoverBlue:
 
 
         edge ChargeBatteryB when (
-            (ChargeStation1.positionX = positionX and ChargeStation1.positionY = positionY) or
-            (ChargeStation2.positionX = positionX and ChargeStation2.positionY = positionY)
+            (ChargeStation1_X = positionX and ChargeStation1_Y = positionY) or
+            (ChargeStation2_X = positionX and ChargeStation2_Y = positionY)
         ) do battery := 8;
 
         edge RoverBMineral when mineral < 3 do mineral := mineral + 1;

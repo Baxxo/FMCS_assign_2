@@ -5,20 +5,46 @@ R1:  no rover runs out of battery on tiles that are not charging station.
 
 */
 
-
+/*
 requirement invariant R1:(
         RoverYellow.battery > 0
-        or (RoverYellow.positionX = ChargeStation1.positionX and RoverYellow.positionY = ChargeStation1.positionY)
-        or (RoverYellow.positionX = ChargeStation2.positionX and RoverYellow.positionY = ChargeStation2.positionY)
+        or (RoverYellow.positionX = ChargeStation1_X and RoverYellow.positionY = ChargeStation1_Y)
+        or (RoverYellow.positionX = ChargeStation2_X and RoverYellow.positionY = ChargeStation2_Y)
     )
     and
     (
         RoverBlue.battery > 0
-        or (RoverBlue.positionX = ChargeStation1.positionX and RoverBlue.positionY = ChargeStation1.positionY)
-        or (RoverBlue.positionX = ChargeStation2.positionX and RoverBlue.positionY = ChargeStation2.positionY)
+        or (RoverBlue.positionX = ChargeStation1_X and RoverBlue.positionY = ChargeStation1_Y)
+        or (RoverBlue.positionX = ChargeStation2_X and RoverBlue.positionY = ChargeStation2_Y)
     );
-
-
+*/
+/*
+requirement invariant R1:(
+        RoverYellow.battery >
+        abs(RoverYellow.positionX - ChargeStation1_X) + abs(RoverYellow.positionY - ChargeStation1_Y) or
+        RoverYellow.battery >
+        abs(RoverYellow.positionX - ChargeStation2_X) + abs(RoverYellow.positionY - ChargeStation2_Y)
+    )
+    and
+    (
+        RoverBlue.battery >
+        abs(RoverBlue.positionX - ChargeStation1_X) + abs(RoverBlue.positionY - ChargeStation1_Y) or
+        RoverYellow.battery >
+        abs(RoverBlue.positionX - ChargeStation2_X) + abs(RoverBlue.positionY - ChargeStation2_Y)
+    );
+*/
+/*
+requirement R1:
+    location L0: initial; marked;
+        edge RoverYMoveUp,RoverYMoveDown,RoverYMoveRight,RoverYMoveLeft when
+        (
+            (RoverYellow.battery >
+            (abs(RoverYellow.positionX - ChargeStation1_X) + abs(RoverYellow.positionY - ChargeStation1_Y))) or
+            (RoverYellow.battery >
+            (abs(RoverYellow.positionX - ChargeStation2_X) + abs(RoverYellow.positionY - ChargeStation2_Y)))
+        );
+end
+*/
 
 /*
 
@@ -26,7 +52,7 @@ R2: The current energy level of each rover is always >= 2 units;
 
 */
 
-requirement R2: RoverYellow.battery >= 2 and RoverBlue.battery >= 2;
+requirement invariant R2: RoverYellow.battery >= 2 and RoverBlue.battery >= 2;
 
 /*
 
@@ -56,7 +82,7 @@ requirement R4:
 
 /*
 
-R5: Each rover can charge only if its current level of energy is <8 units
+R5: Each rover can charge only if its current level of energy is < 8 units
 
 */
 
