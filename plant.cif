@@ -133,15 +133,15 @@ svgout id "flora-yellow" text value RoverYellow.flora;
 controllable event ChargeBatteryB;
 
 // Movement for Blue Rover
-uncontrollable event uRoverBMoveUp;
-uncontrollable event uRoverBMoveDown;
-uncontrollable event uRoverBMoveRight;
-uncontrollable event uRoverBMoveLeft;
-
 controllable event RoverBMoveUp;
 controllable event RoverBMoveDown;
 controllable event RoverBMoveRight;
 controllable event RoverBMoveLeft;
+
+uncontrollable event uRoverBMoveUp;
+uncontrollable event uRoverBMoveDown;
+uncontrollable event uRoverBMoveRight;
+uncontrollable event uRoverBMoveLeft;
 
 // Rover Blue step on an item
 controllable event RoverBMineral;
@@ -220,24 +220,6 @@ plant RoverBlue:
 
 end
 
-svgout id "blue-cell-1" attr "fill" value if RoverBlue.battery < 1 : "lightgray" else "blue" end;
-svgout id "blue-cell-2" attr "fill" value if RoverBlue.battery < 2 : "lightgray" else "blue" end;
-svgout id "blue-cell-3" attr "fill" value if RoverBlue.battery < 3 : "lightgray" else "blue" end;
-svgout id "blue-cell-4" attr "fill" value if RoverBlue.battery < 4 : "lightgray" else "blue" end;
-svgout id "blue-cell-5" attr "fill" value if RoverBlue.battery < 5 : "lightgray" else "blue" end;
-svgout id "blue-cell-6" attr "fill" value if RoverBlue.battery < 6 : "lightgray" else "blue" end;
-svgout id "blue-cell-7" attr "fill" value if RoverBlue.battery < 7 : "lightgray" else "blue" end;
-svgout id "blue-cell-8" attr "fill" value if RoverBlue.battery < 8 : "lightgray" else "blue" end;
-svgout id "blue_rover" attr "x" value (RoverBlue.positionX - 1) * 100;
-svgout id "blue_rover" attr "y" value 300 - ((RoverBlue.positionY - 1) * 100);
-svgout id "x-axis-rb" text value RoverBlue.positionX;
-svgout id "y-axis-rb" text value RoverBlue.positionY;
-svgout id "mineral-blue" text value RoverBlue.mineral;
-svgout id "fossil-blue" text value RoverBlue.fossil;
-svgout id "liquid-blue" text value RoverBlue.liquid;
-svgout id "flora-blue" text value RoverBlue.flora;
-
-
 controllable event processesed;
 controllable event transmited;
 
@@ -257,3 +239,19 @@ plant Lab:
 
 end
 
+svgout id "blue-cell-1" attr "fill" value if RoverBlue.battery < 1 : "lightgray" else "blue" end;
+svgout id "blue-cell-2" attr "fill" value if RoverBlue.battery < 2 : "lightgray" else "blue" end;
+svgout id "blue-cell-3" attr "fill" value if RoverBlue.battery < 3 : "lightgray" else "blue" end;
+svgout id "blue-cell-4" attr "fill" value if RoverBlue.battery < 4 : "lightgray" else "blue" end;
+svgout id "blue-cell-5" attr "fill" value if RoverBlue.battery < 5 : "lightgray" else "blue" end;
+svgout id "blue-cell-6" attr "fill" value if RoverBlue.battery < 6 : "lightgray" else "blue" end;
+svgout id "blue-cell-7" attr "fill" value if RoverBlue.battery < 7 : "lightgray" else "blue" end;
+svgout id "blue-cell-8" attr "fill" value if RoverBlue.battery < 8 : "lightgray" else "blue" end;
+svgout id "blue_rover" attr "x" value (RoverBlue.positionX - 1) * 100;
+svgout id "blue_rover" attr "y" value 300 - ((RoverBlue.positionY - 1) * 100);
+svgout id "x-axis-rb" text value RoverBlue.positionX;
+svgout id "y-axis-rb" text value RoverBlue.positionY;
+svgout id "mineral-blue" text value RoverBlue.mineral;
+svgout id "fossil-blue" text value RoverBlue.fossil;
+svgout id "liquid-blue" text value RoverBlue.liquid;
+svgout id "flora-blue" text value RoverBlue.flora;
