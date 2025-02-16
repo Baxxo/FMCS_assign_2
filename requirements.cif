@@ -24,7 +24,9 @@ R4: Each rover can unload the collected samples only if
     (ii) the rover is at the lab
     (iii) the lab has completed the previous processing
 
+
 */
+// Satisfied by the plant due to construction
 
 /*
 

@@ -1,29 +1,5 @@
 svgfile "plant.svg";
 
-// Charge Battery of Rover Yellow
-controllable event ChargeBatteryY;
-
-// Movement for Yellow Rover
-
-uncontrollable event uRoverYMoveUp;
-uncontrollable event uRoverYMoveDown;
-uncontrollable event uRoverYMoveRight;
-uncontrollable event uRoverYMoveLeft;
-
-controllable event RoverYMoveUp;
-controllable event RoverYMoveDown;
-controllable event RoverYMoveRight;
-controllable event RoverYMoveLeft;
-
-// Rover Yellow step on an item
-controllable event RoverYMineral;
-controllable event RoverYLiquid;
-controllable event RoverYFlora;
-controllable event RoverYFossil;
-
-// Rover Yellow empty items because it is on the lab
-controllable event RoverYUnload;
-
 const int floraX = 6;
 const int floraY = 3;
 
@@ -45,6 +21,29 @@ const int ChargeStation2_Y = 1;
 const int UncontrollCell_X = 3;
 const int UncontrollCell_Y = 2;
 
+// Charge Battery of Rover Yellow
+controllable event ChargeBatteryY;
+
+// Movement for Yellow Rover
+controllable event RoverYMoveUp;
+controllable event RoverYMoveDown;
+controllable event RoverYMoveRight;
+controllable event RoverYMoveLeft;
+
+uncontrollable event uRoverYMoveUp;
+uncontrollable event uRoverYMoveDown;
+uncontrollable event uRoverYMoveRight;
+uncontrollable event uRoverYMoveLeft;
+
+// Rover Yellow step on an item
+controllable event RoverYMineral;
+controllable event RoverYLiquid;
+controllable event RoverYFlora;
+controllable event RoverYFossil;
+
+// Rover Yellow empty items because it is on the lab
+controllable event RoverYUnload;
+
 plant RoverYellow:
 
     disc int[1..6] positionX = 3; // 200 = (3-1) * 100
@@ -56,25 +55,35 @@ plant RoverYellow:
     disc int[0..3] fossil = 0;
 
     location CHARGING: initial; marked;
+
         edge ChargeBatteryY do battery := 8 goto MOVE;
+
         edge RoverYMoveUp when positionY < 4 and battery > 1
             do positionY := positionY + 1, battery := battery -1 goto MOVE;
+
         edge RoverYMoveDown when positionY > 1  and battery > 1
             do positionY := positionY - 1, battery := battery -1 goto MOVE;
+
         edge RoverYMoveRight when positionX < 6 and battery > 1
             do positionX := positionX + 1, battery := battery -1 goto MOVE;
+
         edge RoverYMoveLeft when positionX > 1 and battery > 1
             do positionX := positionX - 1, battery := battery -1 goto MOVE;
 
     location MOVE:
+
         edge RoverYMoveUp when positionY < 4 and battery > 1
             do positionY := positionY + 1, battery := battery -1;
+
         edge RoverYMoveDown when positionY > 1  and battery > 1
             do positionY := positionY - 1, battery := battery -1;
+
         edge RoverYMoveRight when positionX < 6 and battery > 1
             do positionX := positionX + 1, battery := battery -1;
+
         edge RoverYMoveLeft when positionX > 1 and battery > 1
             do positionX := positionX - 1, battery := battery -1;
+
         edge ChargeBatteryY when (
             (ChargeStation1_X = positionX and ChargeStation1_Y = positionY) or
             (ChargeStation2_X = positionX and ChargeStation2_Y = positionY)
@@ -157,16 +166,16 @@ plant RoverBlue:
 
         edge ChargeBatteryB do battery := 8 goto MOVE;
 
-        edge RoverBMoveUp when positionY < 4 and battery > 0
+        edge RoverBMoveUp when positionY < 4 and battery > 1
             do positionY := positionY + 1, battery := battery -1 goto MOVE;
 
-        edge RoverBMoveDown when positionY > 1  and battery > 0
+        edge RoverBMoveDown when positionY > 1  and battery > 1
             do positionY := positionY - 1, battery := battery -1 goto MOVE;
 
-        edge RoverBMoveRight when positionX < 6 and battery > 0
+        edge RoverBMoveRight when positionX < 6 and battery > 1
             do positionX := positionX + 1, battery := battery -1 goto MOVE;
 
-        edge RoverBMoveLeft when positionX > 1 and battery > 0
+        edge RoverBMoveLeft when positionX > 1 and battery > 1
             do positionX := positionX - 1, battery := battery -1 goto MOVE;
 
     location MOVE:
