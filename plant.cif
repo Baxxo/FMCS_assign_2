@@ -58,30 +58,30 @@ plant RoverYellow:
 
         edge ChargeBatteryY do battery := 8 goto MOVE;
 
-        edge RoverYMoveUp when positionY < 4 and battery > 1
+        edge RoverYMoveUp when positionY < 4 and battery > 0 and not (positionY = UncontrollCell_Y and positionX = UncontrollCell_X)
             do positionY := positionY + 1, battery := battery -1 goto MOVE;
 
-        edge RoverYMoveDown when positionY > 1  and battery > 1
+        edge RoverYMoveDown when positionY > 1  and battery > 0 and not (positionY = UncontrollCell_Y and positionX = UncontrollCell_X)
             do positionY := positionY - 1, battery := battery -1 goto MOVE;
 
-        edge RoverYMoveRight when positionX < 6 and battery > 1
+        edge RoverYMoveRight when positionX < 6 and battery > 0 and not (positionY = UncontrollCell_Y and positionX = UncontrollCell_X)
             do positionX := positionX + 1, battery := battery -1 goto MOVE;
 
-        edge RoverYMoveLeft when positionX > 1 and battery > 1
+        edge RoverYMoveLeft when positionX > 1 and battery > 0 and not (positionY = UncontrollCell_Y and positionX = UncontrollCell_X)
             do positionX := positionX - 1, battery := battery -1 goto MOVE;
 
     location MOVE:
 
-        edge RoverYMoveUp when positionY < 4 and battery > 1
+        edge RoverYMoveUp when positionY < 4 and battery > 0 and not (positionY = UncontrollCell_Y and positionX = UncontrollCell_X)
             do positionY := positionY + 1, battery := battery -1;
 
-        edge RoverYMoveDown when positionY > 1  and battery > 1
+        edge RoverYMoveDown when positionY > 1  and battery > 0 and not (positionY = UncontrollCell_Y and positionX = UncontrollCell_X)
             do positionY := positionY - 1, battery := battery -1;
 
-        edge RoverYMoveRight when positionX < 6 and battery > 1
+        edge RoverYMoveRight when positionX < 6 and battery > 0 and not (positionY = UncontrollCell_Y and positionX = UncontrollCell_X)
             do positionX := positionX + 1, battery := battery -1;
 
-        edge RoverYMoveLeft when positionX > 1 and battery > 1
+        edge RoverYMoveLeft when positionX > 1 and battery > 0 and not (positionY = UncontrollCell_Y and positionX = UncontrollCell_X)
             do positionX := positionX - 1, battery := battery -1;
 
         edge ChargeBatteryY when (
@@ -89,8 +89,18 @@ plant RoverYellow:
             (ChargeStation2_X = positionX and ChargeStation2_Y = positionY)
         ) do battery := 8 goto CHARGING;
 
-        edge uRoverYMoveUp, uRoverYMoveDown, uRoverYMoveRight, uRoverYMoveLeft when
-            positionY = UncontrollCell_Y and positionX = UncontrollCell_X;
+        edge uRoverYMoveUp when
+            positionY = UncontrollCell_Y and positionX = UncontrollCell_X
+            do positionY := positionY + 1, battery := battery -1;
+        edge uRoverYMoveDown when
+            positionY = UncontrollCell_Y and positionX = UncontrollCell_X
+            do positionY := positionY + 1, battery := battery -1;
+        edge uRoverYMoveRight when
+            positionY = UncontrollCell_Y and positionX = UncontrollCell_X
+            do positionY := positionY + 1, battery := battery -1;
+        edge uRoverYMoveLeft when
+            positionY = UncontrollCell_Y and positionX = UncontrollCell_X
+            do positionY := positionY + 1, battery := battery -1;
 
         edge RoverYMineral when
             mineral < 3 and mineralX = positionX and mineralY = positionY
@@ -166,30 +176,30 @@ plant RoverBlue:
 
         edge ChargeBatteryB do battery := 8 goto MOVE;
 
-        edge RoverBMoveUp when positionY < 4 and battery > 1
+        edge RoverBMoveUp when positionY < 4 and battery > 0 and not (positionY = UncontrollCell_Y and positionX = UncontrollCell_X)
             do positionY := positionY + 1, battery := battery -1 goto MOVE;
 
-        edge RoverBMoveDown when positionY > 1  and battery > 1
+        edge RoverBMoveDown when positionY > 1  and battery > 0 and not (positionY = UncontrollCell_Y and positionX = UncontrollCell_X)
             do positionY := positionY - 1, battery := battery -1 goto MOVE;
 
-        edge RoverBMoveRight when positionX < 6 and battery > 1
+        edge RoverBMoveRight when positionX < 6 and battery > 0 and not (positionY = UncontrollCell_Y and positionX = UncontrollCell_X)
             do positionX := positionX + 1, battery := battery -1 goto MOVE;
 
-        edge RoverBMoveLeft when positionX > 1 and battery > 1
+        edge RoverBMoveLeft when positionX > 1 and battery > 0 and not (positionY = UncontrollCell_Y and positionX = UncontrollCell_X)
             do positionX := positionX - 1, battery := battery -1 goto MOVE;
 
     location MOVE:
 
-        edge RoverBMoveUp when positionY < 4 and battery > 1
+        edge RoverBMoveUp when positionY < 4 and battery > 0 and not (positionY = UncontrollCell_Y and positionX = UncontrollCell_X)
             do positionY := positionY + 1, battery := battery -1;
 
-        edge RoverBMoveDown when positionY > 1  and battery > 1
+        edge RoverBMoveDown when positionY > 1  and battery > 0 and not (positionY = UncontrollCell_Y and positionX = UncontrollCell_X)
             do positionY := positionY - 1, battery := battery -1;
 
-        edge RoverBMoveRight when positionX < 6 and battery > 1
+        edge RoverBMoveRight when positionX < 6 and battery > 0 and not (positionY = UncontrollCell_Y and positionX = UncontrollCell_X)
             do positionX := positionX + 1, battery := battery -1;
 
-        edge RoverBMoveLeft when positionX > 1 and battery > 1
+        edge RoverBMoveLeft when positionX > 1 and battery > 0 and not (positionY = UncontrollCell_Y and positionX = UncontrollCell_X)
             do positionX := positionX - 1, battery := battery -1;
 
         edge ChargeBatteryB when (
@@ -197,8 +207,22 @@ plant RoverBlue:
             (ChargeStation2_X = positionX and ChargeStation2_Y = positionY)
         ) do battery := 8 goto CHARGING;
 
-        edge uRoverBMoveUp, uRoverBMoveDown, uRoverBMoveRight, uRoverBMoveLeft when
-            positionY = UncontrollCell_Y and positionX = UncontrollCell_X;
+        edge uRoverBMoveUp when
+            positionY = UncontrollCell_Y and positionX = UncontrollCell_X
+            do positionY := positionY + 1, battery := battery -1;
+
+        edge uRoverBMoveDown when
+            positionY = UncontrollCell_Y and positionX = UncontrollCell_X
+            do positionY := positionY - 1, battery := battery -1;
+
+        edge uRoverBMoveRight when
+            positionY = UncontrollCell_Y and positionX = UncontrollCell_X
+            do positionX := positionX + 1, battery := battery -1;
+
+        edge uRoverBMoveLeft when
+            positionY = UncontrollCell_Y and positionX = UncontrollCell_X
+            do positionX := positionX - 1, battery := battery -1;
+
 
         edge RoverBMineral when
             mineral < 3 and mineralX = positionX and mineralY = positionY
