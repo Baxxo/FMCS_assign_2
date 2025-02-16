@@ -1,50 +1,4 @@
 import "plant.cif";
-/*
-
-R1:  no rover runs out of battery on tiles that are not charging station.
-
-*/
-
-/*
-requirement invariant R1:(
-        RoverYellow.battery > 0
-        or (RoverYellow.positionX = ChargeStation1_X and RoverYellow.positionY = ChargeStation1_Y)
-        or (RoverYellow.positionX = ChargeStation2_X and RoverYellow.positionY = ChargeStation2_Y)
-    )
-    and
-    (
-        RoverBlue.battery > 0
-        or (RoverBlue.positionX = ChargeStation1_X and RoverBlue.positionY = ChargeStation1_Y)
-        or (RoverBlue.positionX = ChargeStation2_X and RoverBlue.positionY = ChargeStation2_Y)
-    );
-*/
-/*
-requirement invariant R1:(
-        RoverYellow.battery >
-        abs(RoverYellow.positionX - ChargeStation1_X) + abs(RoverYellow.positionY - ChargeStation1_Y) or
-        RoverYellow.battery >
-        abs(RoverYellow.positionX - ChargeStation2_X) + abs(RoverYellow.positionY - ChargeStation2_Y)
-    )
-    and
-    (
-        RoverBlue.battery >
-        abs(RoverBlue.positionX - ChargeStation1_X) + abs(RoverBlue.positionY - ChargeStation1_Y) or
-        RoverYellow.battery >
-        abs(RoverBlue.positionX - ChargeStation2_X) + abs(RoverBlue.positionY - ChargeStation2_Y)
-    );
-*/
-/*
-requirement R1:
-    location L0: initial; marked;
-        edge RoverYMoveUp,RoverYMoveDown,RoverYMoveRight,RoverYMoveLeft when
-        (
-            (RoverYellow.battery >
-            (abs(RoverYellow.positionX - ChargeStation1_X) + abs(RoverYellow.positionY - ChargeStation1_Y))) or
-            (RoverYellow.battery >
-            (abs(RoverYellow.positionX - ChargeStation2_X) + abs(RoverYellow.positionY - ChargeStation2_Y)))
-        );
-end
-*/
 
 /*
 
@@ -70,14 +24,6 @@ R4: Each rover can unload the collected samples only if
     (ii) the rover is at the lab
     (iii) the lab has completed the previous processing
 
-requirement R4:
-    (RoverYellow.mineral + RoverYellow.liquid + RoverYellow.flora + RoverYellow.fossil > 0 and
-    RoverYellow.positionX = Lab.positionX and RoverYellow.positionY = Lab.positionY and
-    Lab.busy = false) and
-    (RoverBlue.mineral + RoverBlue.liquid + RoverBlue.flora + RoverBlue.fossil > 0 and
-    RoverBlue.positionX = Lab.positionX and RoverBlue.positionY = Lab.positionY and
-    Lab.busy = false);
-
 */
 
 /*
@@ -95,5 +41,4 @@ R6: Rovers do not collide
 
 */
 
-requirement invariant R6:
-    RoverYellow.positionX != RoverBlue.positionX and RoverYellow.positionY != RoverBlue.positionY;
+requirement invariant R6: not (RoverYellow.positionX = RoverBlue.positionX and RoverYellow.positionY = RoverBlue.positionY);
